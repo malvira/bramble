@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -13,9 +14,37 @@
 #define OFF "1"
 
 #define RATE (5 * 1024)
- 
+
+#define GPIO     "453" 
 #define LED_FILE "/sys/class/gpio/gpio453/value"
+#define LED_DIR  "/sys/class/gpio/gpio453/direction"
+#define EXPORT 	 "/sys/class/gpio/export"
  
+static void init_gpio (void)
+{
+  int fd;
+
+  fd = open(EXPORT, O_WRONLY);
+  if (fd < 0) {
+    perror("error opening gpio export:");
+    exit(-1);
+  }
+
+  write(fd, GPIO, strlen(GPIO));
+  close(fd);
+
+  fd = open(LED_DIR, O_WRONLY);
+  if (fd < 0) {
+    perror("error opening gpio direction:");
+    exit(-1);
+  }
+
+  write(fd, "out", 3);
+
+  close(fd);
+
+}
+
 static void daemonize (void)
 {
   int i;
@@ -56,7 +85,7 @@ static int operstate (void)
 
   fd = open(OPERSTATE, O_RDONLY);
   if (fd < 0) {
-    perror("open");
+    perror("open operstate");
     return -1;
   }
 
@@ -84,27 +113,31 @@ static unsigned long long update (void)
   /* RX */
   fd = open(RX_FILE, O_RDONLY);
   if (fd < 0) {
-    perror("open");
+    perror("open rx");
     return -1;
   }
  
   read(fd, buf, 32);
   ret = atoll(buf);
  
-  close(fd);
- 
+  if(close(fd) < 0) {
+    perror("close:");
+  }
+
   /* TX */
   fd = open(TX_FILE, O_RDONLY);
   if (fd < 0) {
-    perror("open");
+    perror("open tx");
     return -1;
   }
  
   read(fd, buf, 32);
   ret += atoll(buf);
  
-  close(fd);
-   
+  if(close(fd) < 0) {
+    perror("close:");
+  }
+
   return ret;
 }
  
@@ -136,14 +169,16 @@ int main (int argc, char ** argv)
 {
   unsigned long long newdata;
   unsigned long long olddata;
+
+  init_gpio();
  
   led_fd = open(LED_FILE, O_WRONLY);
   if (led_fd < 0) {
-    perror("open");
+    perror("open led");
     exit(-1);
   }
  
-  daemonize();
+//  daemonize();
  
   olddata = 0;
   for (;;) {
@@ -167,5 +202,7 @@ int main (int argc, char ** argv)
 
   }
  
-  close(led_fd);
+  if(close(led_fd) < 0) {
+    perror("close:");
+  }
 }
