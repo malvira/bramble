@@ -40,7 +40,16 @@ def radioChannel():
 def get_radio_ip():
     # it's diffcult to get the trailing commas correct in the Contiki IP addr output 
     # so we don't (get it correct) and fix up the last trailing comma here
-    ips = json.loads(subprocess.check_output(['grep', "\"addrs\":", os.path.join(app.config['CACHE_ROOT'],'tunslip6.log')]).replace(',]',']'))
+
+    addrstr = None
+    while addrstr == None:
+        try: 
+            addrstr = subprocess.check_output(['grep', "\"addrs\":", os.path.join(app.config['CACHE_ROOT'],'tunslip6.log')]).replace(',]',']')
+        except subprocess.CalledProcessError:
+            print "couldn't find radio ip addr: retrying..."
+            time.sleep(1)
+
+    ips = json.loads(addrstr)
     return ips
 
 @app.route("/radio/reload", methods=['POST'])
@@ -76,11 +85,6 @@ def load_radio():
             result = subprocess.check_output(["ip", "-f", "inet6", "addr", "show", "tun", "scope", "global"], stderr=devnull)
         except subprocess.CalledProcessError:
             pass
-    time.sleep(1)
-
-    # save the radio ip addr
-    radio['ips'] = get_radio_ip()['addrs']
-    print "Radio ips are %s" % (radio['ips'])
 
     if result is None:
         print "Using fallback address %s/64" % (tunslip['address'])
@@ -92,6 +96,12 @@ def load_radio():
         os.system("tunslip6 -v3 -s %s %s > %s &" % (tunslip['device'], ipv6 + '/64', os.path.join(app.config['CACHE_ROOT'],'tunslip6.log')))
     
     os.system("for i in /proc/sys/net/ipv6/conf/*; do echo 1 > $i/forwarding; done")
+
+    time.sleep(1)
+
+    # save the radio ip addr
+    radio['ips'] = get_radio_ip()['addrs']
+    print "Radio ips are %s" % (radio['ips'])
 
     # get the current channel
     radio['channel'] = coap.get('coap://[%s]/config?param=channel' % (radio['ips'][0])).rstrip()
