@@ -64,7 +64,7 @@ def grep_radio_ip():
 
     addrstr = None
     fails = 0
-    while fails < 3:
+    while fails < 3 and addrstr == None:
         try: 
             addrstr = subprocess.check_output(['grep', "\"addrs\":", os.path.join(app.config['CACHE_ROOT'],'tunslip6.log')]).replace(',]',']')
         except subprocess.CalledProcessError:
