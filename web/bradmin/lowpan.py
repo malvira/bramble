@@ -21,7 +21,7 @@ mako = MakoTemplates(app)
 def getBRInfo(eui, key):
     """ return True if eui and br key combination are ok """
     data = json.dumps({ "apikey": key })
-    url = "https://cloud-1-ord.lowpan.com/api/br/" + eui
+    url = "https://api.lowpan.com/api/br/" + eui
     req = urllib2.Request(url, data, {'Content-Type': 'application/json'})
     f = urllib2.urlopen(req)
     response = json.loads(f.read())
