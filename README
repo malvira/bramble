@@ -1,2 +1,18 @@
 code to run on border-routers
 
+Getting a tunnel:
+-----------------
+
+NOTE securing the passwords/credentials: not sure how to do
+this. Can I store the private key on the server and then issue
+certificates or something? Short answer is no, a determined person
+will get the keys/passwords. But I think that's ok. If you own the
+password you own the license. That's my policy. I just have to make it
+hard for people to steal passwords from other people.
+
+eui and password are used to get the tunnel endpoint from the web api
+gogoc is configured to use that tunnel endpoint (using mac and tunnel password)
+tsp send pass with digst-md5. This will be sent a lot so we'll use a
+different password.
+
+tsps looks up the allocated subnet for the border-router and passes it along.
