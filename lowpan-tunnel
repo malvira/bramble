@@ -46,7 +46,7 @@ data = json.loads(r.read())
 gogo = ''
 gogo = gogo + "userid=%s\n" % (config['eui'])
 gogo = gogo + "passwd=%s\n" % (config['password'])
-gogo = gogo + "server=%s\n" % (data['tunnel'])
+gogo = gogo + "server=%s\n" % (data['tunnel']['uri'])
 gogo = gogo + "\n"
 gogo = gogo + gogotmpl.read()
 
