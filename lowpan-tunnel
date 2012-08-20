@@ -1,0 +1,57 @@
+#!/usr/bin/python
+
+# TODO cache and check the authtoken in /var/cache instead of getting a new one all the time
+
+import httplib
+from urlparse import urlparse
+import json
+import os, sys
+
+# search for lowpan.json config file
+search = ['/etc/lowpan', '/usr/local/etc/lowpan', '.']
+f = None
+gogotmpl = None
+for s in search:
+    try:
+        f = open(s + '/lowpan.json', 'r')
+        gogotmpl = open(s + '/gogoc.conf.tmpl', 'r')
+    except IOError:
+        pass
+
+if f is None:
+    print "could not find config file lowpan.json"
+    exit(1)
+if gogotmpl is None:
+    print "could not find gogo config template gogoc.conf.tmpl"
+    exit(1)
+
+config = json.loads(f.read())
+
+c = httplib.HTTPConnection("couch-0-ord.devl.org:5000")
+data = json.dumps( { 'eui': config['eui'], 'password' : config['password'] } )
+headers = { "Content-type": "application/json" }
+
+c.request("POST", "/device/auth", data, headers)
+r = c.getresponse()
+data = json.loads(r.read())
+token = data['token']
+
+c.request("POST", "/device/tunnel", json.dumps( { "eui": config['eui'], "token": token } ), headers)
+r = c.getresponse()
+data = json.loads(r.read())
+
+# find gogoc template and create gogoc.conf
+# then spawn gogoc with that info
+
+gogo = ''
+gogo = gogo + "userid=%s\n" % (config['eui'])
+gogo = gogo + "passwd=%s\n" % (config['password'])
+gogo = gogo + "server=%s\n" % (data['tunnel'])
+gogo = gogo + "\n"
+gogo = gogo + gogotmpl.read()
+
+os.system('mkdir -p %s' % (config['gogo-conf']))
+out = open(config['gogo-conf'] + '/gogoc.conf', 'w')
+out.write(gogo)
+
+os.system('/etc/init.d/gogoc restart')
