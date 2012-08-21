@@ -16,3 +16,6 @@ tsp send pass with digst-md5. This will be sent a lot so we'll use a
 different password.
 
 tsps looks up the allocated subnet for the border-router and passes it along.
+
+lowpan-tunnel needs to generate a password and the passhash and send
+the passhash to the server.

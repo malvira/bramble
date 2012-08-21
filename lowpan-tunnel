@@ -6,6 +6,9 @@ import httplib
 from urlparse import urlparse
 import json
 import os, sys
+import md5
+import string
+from random import choice
 
 # search for lowpan.json config file
 search = ['/etc/lowpan', '/usr/local/etc/lowpan', '.']
@@ -27,7 +30,24 @@ if gogotmpl is None:
 
 config = json.loads(f.read())
 
-c = httplib.HTTPConnection("couch-0-ord.devl.org:5000")
+# generate a tunnel password
+chars = string.letters + string.digits 
+length = 24
+tunpassword = ''.join(choice(chars) for _ in range(length))
+m = md5.new()
+m.update(config['eui'])
+m.update(':' + config['realm'] + ':') 
+m.update(tunpassword)
+tunpasshash = m.hexdigest()
+
+u = urlparse(config['url'])
+c = None
+if u.scheme == 'http':
+    print "warning: using http --- this is insecure."
+    c = httplib.HTTPConnection(u.netloc)
+else:
+    c = httplib.HTTPSConnection(u.netloc)
+
 data = json.dumps( { 'eui': config['eui'], 'password' : config['password'] } )
 headers = { "Content-type": "application/json" }
 
@@ -36,7 +56,7 @@ r = c.getresponse()
 data = json.loads(r.read())
 token = data['token']
 
-c.request("POST", "/device/tunnel", json.dumps( { "eui": config['eui'], "token": token } ), headers)
+c.request("POST", "/device/tunnel", json.dumps( { "eui": config['eui'], "passhash": tunpasshash, "token": token } ), headers)
 r = c.getresponse()
 data = json.loads(r.read())
 
@@ -45,7 +65,7 @@ data = json.loads(r.read())
 
 gogo = ''
 gogo = gogo + "userid=%s\n" % (config['eui'])
-gogo = gogo + "passwd=%s\n" % (config['password'])
+gogo = gogo + "passwd=%s\n" % (tunpassword)
 gogo = gogo + "server=%s\n" % (data['tunnel']['uri'])
 gogo = gogo + "\n"
 gogo = gogo + gogotmpl.read()
@@ -54,4 +74,6 @@ os.system('mkdir -p %s' % (config['gogo-conf']))
 out = open(config['gogo-conf'] + '/gogoc.conf', 'w')
 out.write(gogo)
 
-os.system('/etc/init.d/gogoc restart')
+print tunpasshash
+
+#os.system('/etc/init.d/gogoc restart')
