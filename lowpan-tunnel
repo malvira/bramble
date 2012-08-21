@@ -74,6 +74,4 @@ os.system('mkdir -p %s' % (config['gogo-conf']))
 out = open(config['gogo-conf'] + '/gogoc.conf', 'w')
 out.write(gogo)
 
-print tunpasshash
-
 #os.system('/etc/init.d/gogoc restart')
