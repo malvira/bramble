@@ -1,5 +1,34 @@
 code to run on border-routers
 
+How to use:
+-----------
+
+Use new-device to get a new eui for a BR12. 
+
+In the web.git, run python passwords to generate a device password.
+
+ python passwords.py 
+{"password": "IP7w6o5CfU7qGIf6NAKKmbli", "bcrypt": "$2a$12$NzXEXmiHgvfI1Xy0bpXdSu9q0dt/WL8PLiEJsANTMzhj8O/qFO/GW"}
+
+Put the bcrypt into the database and put the password into lowpan.json
+
+$2a$12$NzXEXmiHgvfI1Xy0bpXdSu9q0dt/WL8PLiEJsANTMzhj8O/qFO/GW
+
+database:
+ "passwords": {"login": "$2a$12$NzXEXmiHgvfI1Xy0bpXdSu9q0dt/WL8PLiEJsANTMzhj8O/qFO/GW"}
+
+lowpan.json:
+{
+    "url" : "http://couch-0-ord.devl.org:5000", 
+    "eui" : "ec473cbb12000003",
+    "password" : "IP7w6o5CfU7qGIf6NAKKmbli",
+    "realm" : "lowpan",
+    "gogo-conf": "/etc/gogoc"
+}
+
+run lowpan-tunnel, this will get a tsps password and allocate a
+tunnel. It will write a /etc/gogoc.conf with this info.
+
 Getting a tunnel:
 -----------------
 
