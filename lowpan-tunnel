@@ -10,6 +10,13 @@ import md5
 import string
 from random import choice
 
+distro = 'arch'
+try:
+   with open('/etc/apt/sources.list') as f: 
+       distro = 'debian'
+except IOError as e:
+    pass
+
 # search for lowpan.json config file
 search = ['/etc/lowpan', '/usr/local/etc/lowpan', '.']
 f = None
@@ -17,7 +24,7 @@ gogotmpl = None
 for s in search:
     try:
         f = open(s + '/lowpan.json', 'r')
-        gogotmpl = open(s + '/gogoc.conf.tmpl', 'r')
+        gogotmpl = open(s + '/gogoc.conf.tmpl.' + distro, 'r')
     except IOError:
         pass
 
