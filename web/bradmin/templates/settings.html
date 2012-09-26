@@ -1,0 +1,62 @@
+<%inherit file="base.html"/>
+
+<%block name="title">
+Border Router Settings
+</%block>
+
+<%doc>
+TODO
+<%block name="navbar"/>
+<%inherit file="nav.html"/>
+</%doc>
+
+
+<script type="text/x-handlebars">
+  <h3> Ember Debug </h3>
+  {{#view App.DebugView}}
+  tick: {{view.tick}}<br>
+  foo:  {{view Em.TextField valueBinding="App.tick.foo" type="password"}}<br>
+  bar: {{view.bar}}<br>
+  {{/view}}
+</script>
+
+
+<div class="eight columns"><a href="">Home</a></div>   
+<div class="eight columns"><a href="settings">Settings</a></div>
+<hr>
+
+<div class="four columns offset-by-six omega">
+  <h3>Change password</h3>
+  <script type="text/x-handlebars">
+<%doc>      <form action="${url_for('newpass')}" method=post></%doc>
+	<dl>
+	  <dt>New Password:</dt>
+	  <dd>
+	    {{view Em.TextField valueBinding="App.pass1" type="password"}}
+	  </dd>
+	  <dt>Repeat New Password:</dt>
+	  <dd>
+	    {{view Em.TextField valueBinding="App.pass2" type="password"}}	
+	  <dd>
+	  <dd>
+	    <div class="two columns alpha">
+	    <input type=submit value="Change Password" {{bindAttr disabled="App.passbad"}}
+		   {{action "changepass" target="App"}} >
+	    </div>
+	    <div class="two columns omega">
+	      <img src="static/images/ajax-loader.gif" class="spinner" 
+		   {{bindAttr class="App.passChangeWait:visible"}}>
+	    </div>
+	    </div>
+	  </dd>	
+	</dl>
+<%doc>      </form></%doc>
+    </div>
+  </script>
+</div>
+
+<hr>
+
+
+
+

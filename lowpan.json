@@ -1,5 +1,5 @@
 {
-    "url" : "http://couch-0-ord.devl.org:5000", 
+    "url" : "http://couch-0-ord.devl.org", 
     "eui" : "ec473c0000000001",
     "password" : "mTwWDSde42JWeOqDbPJzlUO2",
     "realm" : "lowpan",
