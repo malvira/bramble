@@ -12,4 +12,5 @@ if __name__ == "__main__":
 #    http_server = WSGIServer(('', 5000), app)
 #    http_server.serve_forever()
 #    app.run(host='0.0.0.0', port=80)
+    app.debug = True
     app.run()

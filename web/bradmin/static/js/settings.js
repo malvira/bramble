@@ -4,9 +4,27 @@ var App = Em.Application.create({
     ready: function () { console.log('ready'); App.init()},
     passChangeWait: false,
     passChangeState: 'none',
-    changepass: function() { console.log('changepass'); console.log(App.pass1); console.log(App.pass2); console.log(App.match)},
     pass1: "",
     pass2: "",
+    changepass: function() { 
+	if(this.get('pass1') == this.get('pass2'))
+	{
+	    this.set('passChangeWait', true);
+	    $.ajax({  
+		url: "settings/newpass",  
+		type: "POST",  
+		dataType: "json",  
+		contentType: "application/json",  
+		data: JSON.stringify({ "password": this.get('pass1') }),  
+		success: function(data) {
+		    console.log('pass change ok');
+		    App.set('passChangeWait', false);
+		    App.set('pass1','');
+		    App.set('pass2','');
+		}
+	    });  
+	}	
+    },
     empty: function() {
 	var p1 = this.get('pass1');
 	var p2 = this.get('pass2');
@@ -31,12 +49,9 @@ App.ChangePass = function(pass1, pass2) {
     console.log('called change pass');
     console.log(pass1);
     console.log(pass2);
-    if(pass1 != pass2) {
-	App.set('passChangeState', 'different');
-    } else {
-	App.set('passChangeState', 'wait');
-    }
-    App.set('passChangeWait', true);
+
+
+
 }
 
 /* debug views */
