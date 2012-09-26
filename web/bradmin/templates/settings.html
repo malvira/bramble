@@ -25,35 +25,61 @@ TODO
 <div class="eight columns"><a href="settings">Settings</a></div>
 <hr>
 
-<div class="four columns offset-by-six omega">
+<div class="six columns offset-by-six">
   <h3>Change password</h3>
   <script type="text/x-handlebars">
-<%doc>      <form action="${url_for('newpass')}" method=post></%doc>
-	<dl>
-	  <dt>New Password:</dt>
-	  <dd>
-	    {{view Em.TextField valueBinding="App.pass1" type="password"}}
-	  </dd>
-	  <dt>Repeat New Password:</dt>
+
+<dl>
+  <div class="six columns alpha omega">
+    <dt>New Password:</dt>
+    <dd>
+      {{view Em.TextField valueBinding="App.pass1" type="password"}}
+    </dd>
+    <dt>Repeat New Password:</dt>
 	  <dd>
 	    {{view Em.TextField valueBinding="App.pass2" type="password"}}	
 	  <dd>
+	  </div>
 	  <dd>
 	    <div class="two columns alpha">
-	    <input type=submit value="Change Password" {{bindAttr disabled="App.passbad"}}
+	    <input type=submit value="Change Password" 
+		   {{bindAttr disabled="App.passbad"}}
 		   {{action "changepass" target="App"}} >
 	    </div>
-	    <div class="two columns omega">
+	    <div class="one column">
 	      <img src="static/images/ajax-loader.gif" class="spinner" 
 		   {{bindAttr class="App.passChangeWait:visible"}}>
 	    </div>
+
+	    <div class="three columns omega">
+	    {{#if App.match}}
+	    {{else}}
+	    {{#view App.FadeInView contentBinding="this"}}
+	    <div>Passwords do not match</div>
+	    {{/view}}
 	    </div>
+	    {{/if}}
+            </div>
+
 	  </dd>	
 	</dl>
-<%doc>      </form></%doc>
-    </div>
-  </script>
+
+<div class="six columns alpha">
+{{#if App.match}}
+<div>P</div>
+{{else}}
+{{#view App.FadeInView contentBinding="this"}}
+<div style="text-align: center">Passwords do not match</div>
+{{/view}}
+{{/if}}
 </div>
+
+
+</div>
+
+</script>
+</div>
+
 
 <hr>
 

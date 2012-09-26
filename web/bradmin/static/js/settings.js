@@ -38,6 +38,13 @@ var App = Em.Application.create({
     }.property('match', 'empty')
 });
 
+App.FadeInView = Ember.View.extend({
+    didInsertElement: function(){	
+        this.$().hide().fadeIn('slow');
+    }
+});
+
+
 /* try using find, addObject, and removeObject instead to manage the pings */
 
 /* initialization */
