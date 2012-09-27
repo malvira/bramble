@@ -4,17 +4,11 @@
 Border Router Settings
 </%block>
 
-<%doc>
-TODO
-<%block name="navbar"/>
-<%inherit file="nav.html"/>
-</%doc>
+<%block name="emberapp">
+<script src="static/js/settings.js"></script>
+</%block>
 
-<div class="eight columns"><a href="${url_for('index')}">Home</a></div>   
-<div class="eight columns"><a href="${url_for('settings')}">Settings</a></div>
-<hr>
-
-  <script type="text/x-handlebars">
+<script type="text/x-handlebars">
 
 <div class="six columns offset-by-six">
   <h3>Change password</h3>

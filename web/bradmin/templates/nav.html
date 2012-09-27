@@ -1,2 +1,5 @@
-<h1>NAV BAR!!!</h1>
-${next.body()}
+<%block name="bar">
+<div class="eight columns"><a href="${url_for('index')}">Home</a></div>   
+<div class="eight columns"><a href="${url_for('settings')}">Settings</a></div>
+</%block>
+

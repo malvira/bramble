@@ -47,9 +47,15 @@
   <body>
 
     <div class="container">
+
+      <%namespace name="nav" file="nav.html"/>
+      ${nav.bar()}
+      <hr>
+
       ${next.body()}
-      <script src="static/js/settings.js"></script>
+
       <%block name="emberapp" />
+
     </div>
   </body>
 
