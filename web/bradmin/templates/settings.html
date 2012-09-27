@@ -10,75 +10,54 @@ TODO
 <%inherit file="nav.html"/>
 </%doc>
 
-
-<script type="text/x-handlebars">
-  <h3> Ember Debug </h3>
-  {{#view App.DebugView}}
-  tick: {{view.tick}}<br>
-  foo:  {{view Em.TextField valueBinding="App.tick.foo" type="password"}}<br>
-  bar: {{view.bar}}<br>
-  {{/view}}
-</script>
-
-
 <div class="eight columns"><a href="">Home</a></div>   
 <div class="eight columns"><a href="settings">Settings</a></div>
 <hr>
 
-<div class="six columns offset-by-six">
-  <h3>Change password</h3>
   <script type="text/x-handlebars">
 
-<dl>
-  <div class="six columns alpha omega">
-    <dt>New Password:</dt>
-    <dd>
-      {{view Em.TextField valueBinding="App.pass1" type="password"}}
-    </dd>
-    <dt>Repeat New Password:</dt>
-	  <dd>
-	    {{view Em.TextField valueBinding="App.pass2" type="password"}}	
-	  <dd>
-	  </div>
-	  <dd>
-	    <div class="two columns alpha">
-	    <input type=submit value="Change Password" 
-		   {{bindAttr disabled="App.passbad"}}
-		   {{action "changepass" target="App"}} >
-	    </div>
-	    <div class="one column">
-	      <img src="static/images/ajax-loader.gif" class="spinner" 
-		   {{bindAttr class="App.passChangeWait:visible"}}>
-	    </div>
-
-	    <div class="three columns omega">
-	    {{#if App.match}}
-	    {{else}}
-	    {{#view App.FadeInView contentBinding="this"}}
-	    <div>Passwords do not match</div>
-	    {{/view}}
-	    </div>
-	    {{/if}}
-            </div>
-
-	  </dd>	
-	</dl>
-
-<div class="six columns alpha">
-{{#if App.match}}
-<div>P</div>
-{{else}}
-{{#view App.FadeInView contentBinding="this"}}
-<div style="text-align: center">Passwords do not match</div>
-{{/view}}
-{{/if}}
+<div class="six columns offset-by-six">
+  <h3>Change password</h3>
 </div>
 
+<div class="six columns offset-by-six clearfix">
+  <div class="four columns alpha">New Password:</div>
+  <div class="four columns alpha">
+    {{view Em.TextField valueBinding="App.pass1" type="password"}}
+  </div>
+  
+  <div class="four columns alpha">Repeat New Password:</div>
+  
+  <div class="four columns alpha">
+    {{view Em.TextField valueBinding="App.pass2" type="password"}}	
+  </div>
+  
+  <div class="four columns alpha">
+    <input type=submit value="Change Password" 
+	   style="margin-bottom: 0"
+	   {{bindAttr disabled="App.passbad"}}
+	   {{action "changepass" target="App"}} >
+  </div>
+  
+  <div class="two columns omega">
+    <img src="static/images/ajax-loader.gif" class="spinner" 
+	 {{bindAttr class="App.passChangeWait:visible"}}>
+  </div>
+  
+  <div class="four columns alpha">
+    {{#if App.match}}
+    <div style="text-align: center; height: 5ex;"></div>
+    {{else}}
+    {{#view App.FadeInView contentBinding="this"}}
+    <div style="text-align: center; height: 5ex;">
+      <p>Passwords do not match
+    </div>
+    {{/view}}
+    {{/if}}
+  </div>
 
-</div>
 
 </script>
-</div>
 
 
 <hr>

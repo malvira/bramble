@@ -41,6 +41,10 @@ var App = Em.Application.create({
 App.FadeInView = Ember.View.extend({
     didInsertElement: function(){	
         this.$().hide().fadeIn('slow');
+	this.$("p").position({
+	    of: this.$(),
+	    my: "center center",
+	    at: "center center" });
     }
 });
 
