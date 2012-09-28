@@ -38,3 +38,13 @@ class User(Base):
     def __init__(self, username, password):
         self.username = username
         self.password = password
+
+# generic key/value registry
+class Key(Base):
+    __tablename__ = "keysvals"
+    key = Column(Text, primary_key=True, unique=True)
+    value = Column(Text)
+
+    def __init__(self, key, value):
+        self.key = key
+        self.value = value

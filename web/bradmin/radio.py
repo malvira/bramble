@@ -1,0 +1,17 @@
+import json
+
+from flask import render_template, redirect, url_for, request
+from flask.ext.login import login_required
+from flask.ext.mako import MakoTemplates
+from flask.ext.mako import render_template as render_mako
+
+from bradmin import app, DBSession
+from bradmin.models import User
+
+mako = MakoTemplates(app)
+
+@app.route("/radio")
+@login_required
+def radio():
+    return render_mako('radio.html')
+

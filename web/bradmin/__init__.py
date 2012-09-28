@@ -25,5 +25,13 @@ Base.metadata.create_all(bind=engine)
 init_db()
 
 import bradmin.login
+
+#web pages
 import bradmin.frontpage
 import bradmin.settings
+import bradmin.radio
+import bradmin.clouds
+import bradmin.mesh
+
+#API
+import bradmin.br

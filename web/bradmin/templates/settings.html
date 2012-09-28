@@ -8,6 +8,10 @@ Border Router Settings
 <script src="static/js/settings.js"></script>
 </%block>
 
+<%namespace name="nav" file="nav.html"/>
+${nav.bar()}
+<hr>
+
 <script type="text/x-handlebars">
 
 <div class="six columns offset-by-six">
@@ -53,9 +57,20 @@ Border Router Settings
 
 </script>
 
-
 <hr>
 
+<h3>IPv6 Configuration</h3>
+
+<p> select method for ipv6 connectivity here
+
+<ul>
+  <li>Lowpan tunnel
+  <li>Gogo Freenet tunnel
+  <li>auto6to4
+  <li>radvd/native
+</ul>
+
+<hr>
 
 
 
