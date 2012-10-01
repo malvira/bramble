@@ -4,13 +4,23 @@ log = logging.getLogger(__name__)
 
 from bradmin import app
 
+from gevent.wsgi import WSGIServer
+
+
+
 if __name__ == "__main__":
+#    import gevent
+#    from gevent import monkey
+#    monkey.patch_all()
+
 #    from gevent.wsgi import WSGIServer
 
 #    logging.basicConfig(stream=sys.stderr)
 
-#    http_server = WSGIServer(('', 5000), app)
-#    http_server.serve_forever()
-#    app.run(host='0.0.0.0', port=80)
     app.debug = True
-    app.run(host='::')
+#    app.run(host='0.0.0.0', port=80)
+#    app.run(host='::')
+    http_server = WSGIServer(('::', 5000), app)
+    http_server.serve_forever()
+
+

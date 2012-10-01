@@ -25,6 +25,7 @@ Base.metadata.create_all(bind=engine)
 init_db()
 
 import bradmin.login
+import bradmin.push
 
 #web pages
 import bradmin.frontpage

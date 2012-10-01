@@ -9,6 +9,7 @@ from sqlalchemy.orm.exc import NoResultFound
 
 from bradmin import app, DBSession
 from bradmin.models import User, Key
+from bradmin.push import rplData
 
 mako = MakoTemplates(app)
 
@@ -16,7 +17,6 @@ mako = MakoTemplates(app)
 @app.route("/br", methods=['POST'])
 def brjson():
     session = DBSession()
-
     try:
         brjson = session.query(Key).filter_by(key = 'brjson').one()
         brjson.value = json.dumps(request.json)
@@ -24,6 +24,9 @@ def brjson():
         brjson = Key('brjson', json.dumps(request.json))
         session.add(brjson)
     session.commit()
+
+    rplData.set()
+    rplData.clear()
 
     return Response('ok')
 
