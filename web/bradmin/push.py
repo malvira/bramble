@@ -77,12 +77,9 @@ class Channel(Greenlet):
         self.q.put(StopIteration)
 
     def doRPLData(self, ev):
-        session = DBSession
-        brjson = session.query(Key).filter_by(key = 'brjson').one()
-        routes = json.loads(brjson.value)
-        event = { 'event' : { 'name': 'rplData'}}
-        event['event'].update(routes)
-        self.q.put(json.dumps(event))
+        print "data"
+        print ev.data
+        self.q.put(json.dumps(ev.data))
         self.q.put(StopIteration)
 
 @app.route("/channel", methods = ['POST'])

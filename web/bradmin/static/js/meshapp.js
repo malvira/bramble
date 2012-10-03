@@ -59,10 +59,30 @@ App.doChanData = function(data) {
     if (data != null) {
 	if ('event' in data) {
 	    if (data.event.name == 'rplData') {
-		data.event.routes.forEach( function(item) {
-		    window.sys.addNode('br', {alone:true, mass:.25}) // TODO: set the address of the BR root properly
-		    window.sys.addNode(item, {alone:true, mass:.25})
-		});
+		if ('routes' in data.event) {
+		    data.event.routes.forEach( function(item) {
+			console.log(item);
+//			window.sys.addNode('0212740100010101', {alone:true, mass:.25});
+//			window.sys.addNode('br', {alone:true, mass:.25}) // TODO: set the address of the BR root properly
+//			window.sys.addNode(item, {alone:true, mass:.25})
+		    });
+		}
+		if ('rank' in data.event) {
+		    window.sys.addNode(data.event.src, {mass:.5});
+		    console.log(data.event.src);
+		    console.log(data.event.rank);
+		}
+		if ('adr' in data.event) {
+		    console.log(data.event.src);
+		    console.log(data.event.adr);
+		    console.log(data.event.etx);
+		    console.log(data.event.pref);
+		    window.sys.addNode(data.event.src, {mass:.25});
+		    window.sys.addNode(data.event.adr, {mass:.25});
+		    window.sys.addEdge(data.event.src, data.event.adr, {directed: true});
+//		    window.sys.eachNode(function(node) { console.log(node); } );
+//		    window.sys.eachEdge(function(edge) { console.log(edge); } );
+		}
 	    };
 	};
     };
