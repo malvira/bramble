@@ -59,6 +59,7 @@ App.doChanData = function(data) {
     if (data != null) {
 	if ('event' in data) {
 	    if (data.event.name == 'rplData') {
+		console.log(window.sys.energy())
 		if ('routes' in data.event) {
 		    data.event.routes.forEach( function(item) {
 			console.log(item);
@@ -79,7 +80,8 @@ App.doChanData = function(data) {
 		    console.log(data.event.pref);
 		    window.sys.addNode(data.event.src, {mass:.25});
 		    window.sys.addNode(data.event.adr, {mass:.25});
-		    window.sys.addEdge(data.event.src, data.event.adr, {directed: true});
+		    var d = new Date();
+		    window.sys.addEdge(data.event.src, data.event.adr, {etx: data.event.etx/128, time: d.getTime()});
 //		    window.sys.eachNode(function(node) { console.log(node); } );
 //		    window.sys.eachEdge(function(edge) { console.log(edge); } );
 		}

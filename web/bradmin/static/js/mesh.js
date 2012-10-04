@@ -6,32 +6,22 @@
 
 (function($){
 
-  var Renderer = function(canvas){
-    var canvas = $(canvas).get(0);
-    var ctx = canvas.getContext("2d");
-    var particleSystem
+    var Renderer = function(raph, elt){
+	var canvas = elt;
+      var r;
+      var particleSystem;
 
     var that = {
       init:function(system){
-        $(window).resize(that.resize)  
-        // the particle system will call the init function once, right before the
-        // first frame is to be drawn. it's a good place to set up the canvas and
-        // to pass the canvas size to the particle system
-        //
-        // save a reference to the particle system for use in the .redraw() loop
-        particleSystem = system
-
-        // inform the system of the screen dimensions so it can map coords for us.
-        // if the canvas is ever resized, screenSize should be called again with
-        // the new dimensions
-        particleSystem.screenSize(canvas.width, canvas.height) 
-        particleSystem.screenPadding(80) // leave an extra 80px of whitespace per side
-        
-        // set up some event handlers to allow for node-dragging
-        that.initMouseHandling()
-	that.resize()
+//          $(window).resize(that.resize);
+          particleSystem = system;
+	  particleSystem.screenSize(620, 420);
+          particleSystem.screenPadding(80); // leave an extra 80px of whitespace per side
+          that.initMouseHandling();
+//	  that.resize();
+          r = raph;
       },
-      
+	
       redraw:function(){
         // 
         // redraw will be called repeatedly during the run whenever the node positions
@@ -42,135 +32,43 @@
         // which allow you to step through the actual node objects but also pass an
         // x,y point in the screen's coordinate system
         // 
-        ctx.fillStyle = "white"
-        ctx.fillRect(0,0, canvas.width, canvas.height)
-        
-        // particleSystem.eachEdge(function(edge, pt1, pt2){
-        //   // edge: {source:Node, target:Node, length:#, data:{}}
-        //   // pt1:  {x:#, y:#}  source position in screen coords
-        //   // pt2:  {x:#, y:#}  target position in screen coords
 
-        //   // draw a line from pt1 to pt2
-        //   ctx.strokeStyle = "rgba(0,0,0, .333)"
-        //   ctx.lineWidth = 1
-        //   ctx.beginPath()
-        //   ctx.moveTo(pt1.x, pt1.y)
-        //   ctx.lineTo(pt2.x, pt2.y)
-        //   ctx.stroke()
-        // })
+	  var w = 640 * .01;
 
-        // particleSystem.eachNode(function(node, pt){
-        //   // node: {mass:#, p:{x,y}, name:"", data:{}}
-        //   // pt:   {x:#, y:#}  node position in screen coords
+          r.clear();
 
-        //   // draw a rectangle centered at pt
-        //   var w = 10
-        //   ctx.fillStyle = (node.data.alone) ? "orange" : "black"
-        //   ctx.fillRect(pt.x-w/2, pt.y-w/2, w,w)
-        // })    			
+          particleSystem.eachEdge(function(edge, pt1, pt2){
+              // edge: {source:Node, target:Node, length:#, data:{}}
+              // pt1:  {x:#, y:#}  source position in screen coords
+              // pt2:  {x:#, y:#}  target position in screen coords
+	      var light = 1 - (1 / edge.data.etx) * .5;
+	      if (edge.data.etx == 0 ) { light = .5; }
+	      if (light > .97) { light = .97; }
 
+	      if (edge.data.time) {
+		  var now = new Date();
+		  var sat = 1 - (now.getTime() - edge.data.time)/(1000*60);
+		  if (sat < 0 ) { sat = 0; }
+	      } else {
+		  sat = .001;
+	      }
 
-        var nodeBoxes = {}
+	      r.path([["M", pt1.x, pt1.y], ["L", pt2.x, pt2.y]]).attr({stroke: Raphael.hsl(.6, sat, light), "stroke-width": "2"});
+          })
 
-        particleSystem.eachNode(function(node, pt){
-          // node: {mass:#, p:{x,y}, name:"", data:{}}
-          // pt:   {x:#, y:#}  node position in screen coords
-
-          // determine the box size and round off the coords if we'll be 
-          // drawing a text label (awful alignment jitter otherwise...)
-          var label = node.data.label||""
-          var w = ctx.measureText(""+label).width + 10
-          if (!(""+label).match(/^[ \t]*$/)){
-            pt.x = Math.floor(pt.x)
-            pt.y = Math.floor(pt.y)
-          }else{
-            label = null
-          }
-
-          // draw a rectangle centered at pt
-          if (node.data.color) ctx.fillStyle = node.data.color
-          else ctx.fillStyle = "rgba(0,0,0,.2)"
-          if (node.data.color=='none') ctx.fillStyle = "white"
-
-            var w = 10
-            ctx.fillStyle = (node.data.alone) ? "orange" : "black"
-            ctx.fillRect(pt.x-w/2, pt.y-w/2, w,w)
-
-            nodeBoxes[node.name] = [pt.x-w/2, pt.y-11, w, 22]
-
-          // draw the text
-          if (label){
-            ctx.font = "12px Helvetica"
-            ctx.textAlign = "center"
-            ctx.fillStyle = "white"
-            if (node.data.color=='none') ctx.fillStyle = '#333333'
-            ctx.fillText(label||"", pt.x, pt.y+4)
-            ctx.fillText(label||"", pt.x, pt.y+4)
-          }
-        })    			
-
-
-        // draw the edges
-        particleSystem.eachEdge(function(edge, pt1, pt2){
-          // edge: {source:Node, target:Node, length:#, data:{}}
-          // pt1:  {x:#, y:#}  source position in screen coords
-          // pt2:  {x:#, y:#}  target position in screen coords
-
-          var weight = edge.data.weight
-          var color = edge.data.color
-
-          if (!color || (""+color).match(/^[ \t]*$/)) color = null
-
-          // find the start point
-          var tail = intersect_line_box(pt1, pt2, nodeBoxes[edge.source.name])
-          var head = intersect_line_box(tail, pt2, nodeBoxes[edge.target.name])
-
-          ctx.save() 
-            ctx.beginPath()
-            ctx.lineWidth = (!isNaN(weight)) ? parseFloat(weight) : 1
-            ctx.strokeStyle = (color) ? color : "#cccccc"
-            ctx.fillStyle = (color) ? color : "#cccccc"
-
-            ctx.moveTo(tail.x, tail.y)
-            ctx.lineTo(head.x, head.y)
-            ctx.stroke()
-
-          ctx.restore()
-
-          // draw an arrowhead if this is a -> style edge
-          if (edge.data.directed){
-            ctx.save()
-              // move to the head position of the edge we just drew
-              var wt = !isNaN(weight) ? parseFloat(weight) : 1
-              var arrowLength = 6 + wt
-              var arrowWidth = 2 + wt
-              ctx.fillStyle = (color) ? color : "#cccccc"
-              ctx.translate(head.x, head.y);
-              ctx.rotate(Math.atan2(head.y - tail.y, head.x - tail.x));
-
-              // delete some of the edge that's already there (so the point isn't hidden)
-              ctx.clearRect(-arrowLength/2,-wt/2, arrowLength/2,wt)
-
-              // draw the chevron
-              ctx.beginPath();
-              ctx.moveTo(-arrowLength, arrowWidth);
-              ctx.lineTo(0, 0);
-              ctx.lineTo(-arrowLength, -arrowWidth);
-              ctx.lineTo(-arrowLength * 0.8, -0);
-              ctx.closePath();
-              ctx.fill();
-            ctx.restore()
-          }
-        })
-
+	  particleSystem.eachNode(function(node, pt) {
+              // node: {mass:#, p:{x,y}, name:"", data:{}}
+              // pt:   {x:#, y:#}  node position in screen coords
+	      r.circle(pt.x,pt.y,w).attr({fill: "white"});
+	  })
 
       },
 
       resize:function(){   
-	  $(canvas).height($(window).height())
-	  canvas.width = $(canvas).width()
-	  canvas.height = $(canvas).height()
-          particleSystem.screenSize($(canvas).width(), $(canvas).height());
+	  console.log($(canvas).width());
+	  console.log($(window).height());
+          particleSystem.screenSize($(canvas).width(), $(window).height());
+          r.setSize($(canvas).width(), $(window).height());
           that.redraw();
       },
       
@@ -261,20 +159,26 @@
   }    
 
   $(document).ready(function(){
-    window.sys = arbor.ParticleSystem(1000, 600, 0.5) // create the system with sensible repulsion/stiffness/friction
-    var sys = window.sys
+      window.sys = arbor.ParticleSystem(1000, 600, 0.5); // create the system with sensible repulsion/stiffness/friction
+      var sys = window.sys;
+      var raph = Raphael("mesh", 620, 420),
+                    discattr = {fill: "#fff", stroke: "none"};
 
     sys.parameters({gravity:true}) // use center-gravity to make the graph settle nicely (ymmv)
       sys.parameters({dt:0.002})
-    sys.renderer = Renderer("#viewport") // our newly created renderer will have its .init() method called shortly by sys...
+    
+      sys.renderer = Renderer(raph, "#mesh") // our newly created renderer will have its .init() method called shortly by sys...
 
 
       // add some nodes to the graph and watch it go...
-//    sys.addEdge('a','b')
-//    sys.addEdge('a','c')
-//    sys.addEdge('a','d')
-//    sys.addEdge('a','e')
- //   sys.addNode('f', {alone:true, mass:.25})
+      var now = new Date();
+//      sys.addEdge('a','b', {etx: 1, time: now.getTime()});
+//      sys.addEdge('a','c', {etx: 2, time: now.getTime() - 1000 * 60 * 60});
+//      sys.addEdge('a','d', {etx: 4, time: now.getTime() - 1000 * 60 * 60 * 24});
+//      sys.addEdge('a','e', {etx: 8});
+//      sys.addEdge('e','f', {etx: 200});
+//      sys.addEdge('e','g', {etx: 15});
+//    sys.addNode('f', {alone:true, mass:.25});
 
     // or, equivalently:
     //
