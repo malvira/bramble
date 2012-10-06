@@ -59,7 +59,6 @@ App.doChanData = function(data) {
     if (data != null) {
 	if ('event' in data) {
 	    if (data.event.name == 'rplData') {
-		console.log(window.sys.energy())
 		if ('routes' in data.event) {
 		    data.event.routes.forEach( function(item) {
 			console.log(item);
@@ -74,16 +73,25 @@ App.doChanData = function(data) {
 		    console.log(data.event.rank);
 		}
 		if ('adr' in data.event) {
-		    console.log(data.event.src);
-		    console.log(data.event.adr);
-		    console.log(data.event.etx);
-		    console.log(data.event.pref);
-		    window.sys.addNode(data.event.src, {mass:.25});
-		    window.sys.addNode(data.event.adr, {mass:.25});
+		    var src = window.sys.getNode(data.event.src);
+		    if (null == src) { window.sys.addNode(window.sys.addNode(data.event.src, {mass:.25})) }
+		    var adr = window.sys.getNode(data.event.src);
+		    if (null == adr) { window.sys.addNode(window.sys.addNode(data.event.adr, {mass:.25})) }
+		    
 		    var d = new Date();
-		    window.sys.addEdge(data.event.src, data.event.adr, {etx: data.event.etx/128, time: d.getTime()});
-//		    window.sys.eachNode(function(node) { console.log(node); } );
-//		    window.sys.eachEdge(function(edge) { console.log(edge); } );
+		    var edges = window.sys.getEdges(data.event.src, data.event.adr);
+		    var edge = edges[0];
+		    console.log(edge)
+		    if (null != edge) {
+			console.log(edge);
+			edge.data.time = d.getTime();
+			edge.data.etx = data.event.etx/128;
+		    } else {
+			window.sys.addEdge(data.event.src, data.event.adr, 
+					   { etx: data.event.etx/128, 
+					     time: d.getTime(), 
+					     pref: data.event.pref });
+		    }
 		}
 	    };
 	};
