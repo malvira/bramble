@@ -7,8 +7,7 @@ from flask.ext.mako import render_template as render_mako
 
 from sqlalchemy.orm.exc import NoResultFound
 
-from bradmin import app, DBSession
-from bradmin.models import User, Key
+from bradmin import app
 from bradmin.push import rplData
 
 from IPy import IP
@@ -33,15 +32,6 @@ def brjson():
     # generalize this function into a util
     for r in request.json['routes']:
         print r
-
-    session = DBSession()
-    try:
-        brjson = session.query(Key).filter_by(key = 'brjson').one()
-        brjson.value = json.dumps(request.json)
-    except NoResultFound:
-        brjson = Key('brjson', json.dumps(request.json))
-        session.add(brjson)
-    session.commit()
 
     event = { 'event' : { 'name': 'rplData', 'src': src }}
     event['event'].update(request.json)

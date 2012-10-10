@@ -5,8 +5,7 @@ from flask.ext.login import login_required
 from flask.ext.mako import MakoTemplates
 from flask.ext.mako import render_template as render_mako
 
-from bradmin import app, DBSession
-from bradmin.models import User
+from bradmin import app
 
 mako = MakoTemplates(app)
 
@@ -18,9 +17,5 @@ def settings():
 @app.route("/settings/newpass", methods=['POST','GET'])
 @login_required
 def newpass():
-    session = DBSession()
-    admin = session.query(User).filter_by(username='admin').one()
-    admin.password = request.json['password']
-    session.commit()
     return json.dumps(dict(status = 'ok'))
 

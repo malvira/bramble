@@ -15,9 +15,8 @@ import gevent.queue
 from gevent import monkey
 monkey.patch_all()
 
-from bradmin import app, DBSession
+from bradmin import app
 from bradmin.utils import genPass
-from bradmin.models import Key
 
 """ expiration time on notifications """
 NOTE_EXPIRY = 60*60

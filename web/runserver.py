@@ -9,11 +9,11 @@ from gevent.wsgi import WSGIServer
 
 
 if __name__ == "__main__":
-#    import gevent
-#    from gevent import monkey
-#    monkey.patch_all()
+    import gevent
+    from gevent import monkey
+    monkey.patch_all()
 
-#    from gevent.wsgi import WSGIServer
+    from gevent.wsgi import WSGIServer
 
 #    logging.basicConfig(stream=sys.stderr)
 

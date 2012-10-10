@@ -3,8 +3,7 @@ from flask.ext.login import LoginManager, login_user, current_user, UserMixin, l
 from flask.ext.mako import MakoTemplates
 from flask.ext.mako import render_template as render_mako
 
-from bradmin import app, DBSession
-from bradmin.models import User
+from bradmin import app
 
 mako = MakoTemplates(app)
 login_manager = LoginManager()
@@ -12,10 +11,9 @@ login_manager.setup_app(app)
 
 class LoginUser(UserMixin):
     def __init__(self, id='admin'):                
-        session = DBSession()
-        dbUser = session.query(User).filter_by(username = id).one()
-        self.id = dbUser.username
-        self.password = dbUser.password
+        self.id = id
+        self.password = 'default'
+
         UserMixin.__init__(self)
 
 @login_manager.user_loader

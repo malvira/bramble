@@ -5,8 +5,7 @@ from flask.ext.login import login_required
 from flask.ext.mako import MakoTemplates
 from flask.ext.mako import render_template as render_mako
 
-from bradmin import app, DBSession
-from bradmin.models import User
+from bradmin import app
 
 mako = MakoTemplates(app)
 

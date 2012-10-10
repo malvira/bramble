@@ -10,20 +10,6 @@ app = Flask(__name__)
 app.config.from_object(__name__)
 application = app
 
-from sqlalchemy import create_engine
-from sqlalchemy.orm import scoped_session, sessionmaker
-from sqlalchemy.ext.declarative import declarative_base
-
-engine = create_engine('sqlite:////tmp/bradmin.db', convert_unicode=True)
-DBSession = scoped_session(sessionmaker(autocommit=False,
-                                         autoflush=False,
-                                         bind=engine))
-Base = declarative_base()
-Base.query = DBSession.query_property()
-from bradmin.models import init_db
-Base.metadata.create_all(bind=engine)
-init_db()
-
 import bradmin.login
 import bradmin.push
 
