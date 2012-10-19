@@ -1,0 +1,10 @@
+#!/bin/busybox sh
+
+if [ ! -d /sys/class/gpio/gpio451 ]
+then
+	echo 451 > /sys/class/gpio/export
+fi
+echo "out" > /sys/class/gpio/gpio451/direction
+echo 0 > /sys/class/gpio/gpio451/value
+sleep 1
+echo 1 > /sys/class/gpio/gpio451/value

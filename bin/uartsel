@@ -1,0 +1,20 @@
+#!/bin/sh
+
+USEL=462
+
+if [ ! -d /sys/class/gpio/gpio$USEL ] 
+then
+	echo $USEL > /sys/class/gpio/export
+	echo "out" > /sys/class/gpio/gpio$USEL/direction	
+fi
+
+if [ $1 = "mc" ]
+then
+	echo 0 > /sys/class/gpio/gpio$USEL/value
+fi
+
+if [ $1 = "linux" ]
+then
+	echo 1 > /sys/class/gpio/gpio$USEL/value
+fi
+

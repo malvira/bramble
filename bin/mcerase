@@ -1,0 +1,24 @@
+#!/bin/sh
+set -x
+
+REFH=461
+REFL=460
+
+if [ ! -d /sys/class/gpio/gpio$REFL ] 
+then
+	echo $REFL > /sys/class/gpio/export
+        echo "out" > /sys/class/gpio/gpio$REFL/direction
+fi
+if [ ! -d /sys/class/gpio/gpio$REFH ] 
+then
+	echo $REFH > /sys/class/gpio/export
+	echo "out" > /sys/class/gpio/gpio$REFH/direction
+fi
+
+echo 1 > /sys/class/gpio/gpio$REFL/value
+echo 0 > /sys/class/gpio/gpio$REFH/value
+mcreset
+sleep 1
+echo 0 > /sys/class/gpio/gpio$REFL/value
+echo 1 > /sys/class/gpio/gpio$REFH/value
+mcreset
