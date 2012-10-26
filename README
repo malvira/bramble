@@ -48,3 +48,16 @@ tsps looks up the allocated subnet for the border-router and passes it along.
 
 lowpan-tunnel needs to generate a password and the passhash and send
 the passhash to the server.
+
+Directory Structure:
+--------------------
+
+web/
+   flask border-router webpage
+files/
+   files for various systems, mirrors their directory structure
+   arch/
+      files for arch/arm
+   debian/
+      files for debian/ubuntu desktops acting as border-routers
+      (useful for development)
