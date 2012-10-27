@@ -1,0 +1,25 @@
+server {
+       listen       80;
+       listen       [::]:80 ipv6only=on;
+       server_name  br;
+
+       location / {
+       		include uwsgi_params;
+                uwsgi_pass 127.0.0.1:3031;
+                uwsgi_buffering off;
+                uwsgi_read_timeout 75;
+                uwsgi_buffer_size   128k;
+                uwsgi_buffers   4 256k;
+                uwsgi_busy_buffers_size   256k;
+	}
+
+	location /static {
+		root PATH-TO-BRADMIN-STATIC;
+	}
+
+        error_page   500 502 503 504  /50x.html;
+        location = /50x.html {
+                root   /usr/share/nginx/html;
+        }
+}
+
