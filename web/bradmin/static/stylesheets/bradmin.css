@@ -49,3 +49,7 @@ div.login {
 .spinner.visible {
     display: block;
 }
+
+.cjust {
+    text-align: center;
+}

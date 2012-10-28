@@ -14,8 +14,8 @@ ${nav.bar()}
 
 <script type="text/x-handlebars">
 
-<div class="six columns offset-by-six">
-  <h3>Change password</h3>
+<div class="eight columns offset-by-four">
+  <h3 class="cjust">Change password</h3>
 </div>
 
 <div class="six columns offset-by-six clearfix">
@@ -58,6 +58,24 @@ ${nav.bar()}
 </script>
 
 <hr>
+
+<script type="text/x-handlebars">
+<div class="eight columns offset-by-four">
+  <h3 class="cjust">Lowpan API</h3>
+</div>
+
+<br class="clear"/>
+
+<div class="six columns offset-by-six clearfix">
+  <div class="four columns alpha">Lowpan URL:</div>
+  <div class="four columns alpha">
+    {{view Em.TextField valueBinding="App.lowpan.endpoint"}}
+  </div>
+</div>
+
+</script>
+
+<br class="clear"/>
 
 <h3>IPv6 Configuration</h3>
 
