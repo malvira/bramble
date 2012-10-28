@@ -21,14 +21,15 @@ cd gevent
 python setup.py build
 python setup.py install
 
+cd $DIR
 # setup nginx
 STATIC=$BASE/web/bradmin
 cp etc/nginx/bradmin /etc/nginx/sites-available
-ln -s /etc/nginx/sites-available/bradmin /etc/nginx/sites-enabled/bradmin
+ln -sf /etc/nginx/sites-available/bradmin /etc/nginx/sites-enabled/bradmin
 sudo sed -i "s,root PATH-TO-BRADMIN-STATIC,root $STATIC,g" /etc/nginx/sites-available/bradmin
 service nginx restart
 
 #setup uwsgi app
 cp ../arch/etc/uwsgi/apps/bradmin.ini /etc/uwsgi/apps-available
-ln -s /etc/uwsgi/apps-available/bradmin.ini /etc/uwsgi/apps-enabled/bradmin.ini
+ln -sf /etc/uwsgi/apps-available/bradmin.ini /etc/uwsgi/apps-enabled/bradmin.ini
 service uwsgi restart
