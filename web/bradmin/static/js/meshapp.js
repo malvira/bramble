@@ -68,30 +68,27 @@ App.doChanData = function(data) {
 		    });
 		}
 		if ('rank' in data.event) {
-		    window.sys.addNode(data.event.src, {mass:.5});
-		    console.log(data.event.src);
-		    console.log(data.event.rank);
+		    var node = {};
+		    node.eui = data.event.src;
+		    node.rank = data.event.rank;
+		    window.addNode(node);
 		}
 		if ('adr' in data.event) {
-		    var src = window.sys.getNode(data.event.src);
-		    if (null == src) { window.sys.addNode(window.sys.addNode(data.event.src, {mass:.25})) }
-		    var adr = window.sys.getNode(data.event.src);
-		    if (null == adr) { window.sys.addNode(window.sys.addNode(data.event.adr, {mass:.25})) }
+		    var src = {};
+		    var target = {};
+		    src.eui = data.event.src;
+		    target.eui = data.event.adr;
+		    window.addNode(src);
+		    window.addNode(target);
 		    
 		    var d = new Date();
-		    var edges = window.sys.getEdges(data.event.src, data.event.adr);
-		    var edge = edges[0];
-		    console.log(edge)
-		    if (null != edge) {
-			console.log(edge);
-			edge.data.time = d.getTime();
-			edge.data.etx = data.event.etx/128;
-		    } else {
-			window.sys.addEdge(data.event.src, data.event.adr, 
-					   { etx: data.event.etx/128, 
-					     time: d.getTime(), 
-					     pref: data.event.pref });
-		    }
+		    var edge = {};
+		    edge.time = d.getTime();
+		    edge.etx = data.event.etx/128;
+		    edge.source = data.event.src;
+		    edge.target = data.event.adr;
+		    edge.pref = data.event.pref;
+		    window.addEdge(edge);
 		}
 	    };
 	};
