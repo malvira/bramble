@@ -15,12 +15,12 @@ if __name__ == "__main__":
 
     from gevent.wsgi import WSGIServer
 
-#    logging.basicConfig(stream=sys.stderr)
+    logging.basicConfig(stream=sys.stderr)
 
-    app.debug = True
+#    app.debug = True
 #    app.run(host='0.0.0.0', port=80)
 #    app.run(host='::')
-    http_server = WSGIServer(('::', 5000), app)
+    http_server = WSGIServer(('::', 80), app)
     http_server.serve_forever()
 
 
