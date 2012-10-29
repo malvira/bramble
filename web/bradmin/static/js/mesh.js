@@ -62,13 +62,14 @@ var force;
 
     $("#mesh").height($(window).height());
 
-    svg = d3.select("#mesh").append("svg")
-	.attr("class", "sixteen columns");
+    svg = d3.select("#mesh").append("svg");
+
+    window.mesh = svg;
 
     force = d3.layout.force()
 	.linkDistance(function(d) { if (d.etx > 1 ) { return d.etx * 50; } else { return 25; }})
 	.charge(-100)
-	.gravity(0.05)
+	.gravity(0.01)
 	.size([$("#mesh").width(), $(window).height()]);
 
     nodes = force.nodes();

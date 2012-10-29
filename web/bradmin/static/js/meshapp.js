@@ -4,12 +4,27 @@ var App = Em.Application.create({
     pollCount: 0,
 });
 
-/* try using find, addObject, and removeObject instead to manage the pings */
-
-/* initialization */
 App.init = function() {
     App.poll();
-}
+};
+
+App.nodes = Em.ArrayController.create({
+    content: [],
+    addIfNew: function(n) {
+	if (this.findProperty('eui', n.eui) == null) {
+	    this.pushObject(n);	
+	    var c = this.get('content');
+	    c.sort(function(a,b) {
+		return a.eui - b.eui;
+	    });
+	    this.replace(0,c.length,c);
+	}},
+
+});
+
+App.node = Em.Object.extend({
+    eui: null,
+});
 
 App.getChan = function() {
     $.ajax({  
@@ -62,15 +77,14 @@ App.doChanData = function(data) {
 		if ('routes' in data.event) {
 		    data.event.routes.forEach( function(item) {
 			console.log(item);
-//			window.sys.addNode('0212740100010101', {alone:true, mass:.25});
-//			window.sys.addNode('br', {alone:true, mass:.25}) // TODO: set the address of the BR root properly
-//			window.sys.addNode(item, {alone:true, mass:.25})
 		    });
 		}
 		if ('rank' in data.event) {
 		    var node = {};
 		    node.eui = data.event.src;
 		    node.rank = data.event.rank;
+		    n = App.node.create({ eui: node.eui, rank: node.rank });
+		    App.nodes.addIfNew(n);
 		    window.addNode(node);
 		}
 		if ('adr' in data.event) {
@@ -81,6 +95,11 @@ App.doChanData = function(data) {
 		    window.addNode(src);
 		    window.addNode(target);
 		    
+		    s = App.node.create({ eui: src.eui })
+		    t = App.node.create({ eui: target.eui })
+		    App.nodes.addIfNew(s)
+		    App.nodes.addIfNew(t)
+
 		    var d = new Date();
 		    var edge = {};
 		    edge.time = d.getTime();
@@ -94,3 +113,8 @@ App.doChanData = function(data) {
 	};
     };
 };
+
+App.viewInfoMesh = Ember.View.extend({
+    nodeBinding: 'App.nodes',
+});
+

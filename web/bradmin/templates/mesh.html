@@ -13,7 +13,30 @@ ${nav.bar()}
 </%block>
 
 <link rel="stylesheet" href="static/stylesheets/mesh.css">
-<div id="mesh" class="sixteen columns" />
+
+<div class="container">
+  <div id="mesh" class="twelve columns"></div>
+  <div id="info" class="four columns">
+
+    <script type="text/x-handlebars">
+      {{#view App.viewInfoMesh }}
+      {{#each node}}
+      <b>Eui:</b> {{eui}}<br>
+      {{/each}}
+      {{/view}}
+    </script>
+
+      <h1> Important</h1>
+      <p> blah balh info
+
+	<h2> a thing </h2>
+	<p> foo foo 
+
+	  <h2> a second thing </h2>
+
+
+  </div>
+</div>
 
 <script src="static/js/d3.v2.min.js"></script>
 <script src="static/js/raphael-min.js"></script> 
