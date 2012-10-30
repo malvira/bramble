@@ -6,7 +6,6 @@ Radio Settings
 
 <%namespace name="nav" file="nav.html"/>
 ${nav.bar()}
-<hr>
 
 <%block name="emberapp">
 <script src="static/js/meshapp.js"></script>
@@ -16,24 +15,15 @@ ${nav.bar()}
 
 <div class="container">
   <div id="mesh" class="twelve columns"></div>
-  <div id="info" class="four columns">
+  <div id="info" class="four columns" style="overflow: auto">
 
     <script type="text/x-handlebars">
       {{#view App.viewInfoMesh }}
       {{#each node}}
-      <b>Eui:</b> {{eui}}<br>
+      {{eui}}<br>
       {{/each}}
       {{/view}}
     </script>
-
-      <h1> Important</h1>
-      <p> blah balh info
-
-	<h2> a thing </h2>
-	<p> foo foo 
-
-	  <h2> a second thing </h2>
-
 
   </div>
 </div>

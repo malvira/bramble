@@ -27,10 +27,19 @@ window.addEdge = function(edge) {
     updateMesh();
 };
 
-$(window).resize(function() {
+function resize() {
     window.force.size([$("#mesh").width(), $(window).height()]);
-    $("#mesh").height($(window).height());
-    window.force.resume();
+    var navh = $("#nav").height();
+    $("#mesh").height($(window).height() - navh - 75);
+    $("#info").height($(window).height() - navh - 75 );
+};
+
+$().ready(function() {
+    resize();
+});
+
+$(window).resize(function() {
+    resize();
 });
 
 function updateMesh() {
