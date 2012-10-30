@@ -1,3 +1,5 @@
+var nodes;
+var links;
 
 var nodeToIdx = {};
 var linkToIdx = {};
@@ -31,7 +33,8 @@ function resize() {
     window.force.size([$("#mesh").width(), $(window).height()]);
     var navh = $("#nav").height();
     $("#mesh").height($(window).height() - navh - 75);
-    $("#info").height($(window).height() - navh - 75 );
+    $("#nodes").height($(window).height() - navh - 75 );
+    $("#list").height(($(window).height() - navh) * .5);
 };
 
 $().ready(function() {
@@ -41,6 +44,11 @@ $().ready(function() {
 $(window).resize(function() {
     resize();
 });
+
+function nodeClick(eui) {
+    node = App.nodes.findProperty('eui', eui);
+    node.select();
+}
 
 function updateMesh() {
 
@@ -54,7 +62,9 @@ function updateMesh() {
     	.data(nodes)
     	.enter().append("circle")
 	.order()
+	.attr("onclick", function(d) { return "nodeClick('" + d.eui + "')"})
     	.attr("class", "node")
+	.attr("id", function(d) { return "eui" + d.eui; })
     	.attr("r", 10)
 	.call(force.drag);
    
@@ -63,8 +73,6 @@ function updateMesh() {
 }
 
 var svg;
-var nodes;
-var links;
 var force;
 
 (function() {

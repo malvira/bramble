@@ -10,6 +10,9 @@ App.init = function() {
 
 App.nodes = Em.ArrayController.create({
     content: [],
+    itemViewClass: Ember.View.extend({
+	template: Ember.Handlebars.compile("the letter: {{view.content}}")
+    }),
     addIfNew: function(n) {
 	if (this.findProperty('eui', n.eui) == null) {
 	    this.pushObject(n);	
@@ -19,11 +22,43 @@ App.nodes = Em.ArrayController.create({
 	    });
 	    this.replace(0,c.length,c);
 	}},
-
 });
 
+App.nodeItemView = Ember.View.extend({
+    classNameBindings: ['content.selected', 'content.focus'],
+    template: Ember.Handlebars.compile('{{content.eui}}'),
+    mouseEnter: function(event, view) {
+	this.content.set('focus', true);
+	this.$().animate({
+	    backgroundColor: "#abcdef"
+	}, 250 );
+    },
+    mouseLeave:  function(event, view) {
+	this.content.set('focus', false);
+	this.$().animate({
+	    backgroundColor: "#ffffff"
+	}, 75 );	
+    },
+    click: function(e,v) {
+	this.content.select();
+    }
+})
+
+App.selectedNode = null;
 App.node = Em.Object.extend({
     eui: null,
+    selected: false,
+    focus: false,
+    select: function() {
+	if(App.selectedNode) { 
+	    App.selectedNode.set('selected', false); 
+	    window.mesh.selectAll("#eui" + App.selectedNode.eui).style("stroke", "black");
+	}
+	this.set('selected', true);
+	App.set('selectedNode', this);
+	var eui = App.get('selectedNode').get('eui');
+	window.mesh.selectAll("#eui" + eui).style("stroke", "red");
+    }
 });
 
 App.getChan = function() {
@@ -115,6 +150,15 @@ App.doChanData = function(data) {
 };
 
 App.viewInfoMesh = Ember.View.extend({
-    nodeBinding: 'App.nodes',
+    nodeBinding: 'App.nodes'
 });
 
+App.nodeItem = Ember.View.extend({
+    templateName: 'node-item',
+    euiBinding: null,
+    selectedBinding: false,
+});
+
+App.selectedNodeView = Ember.View.extend({
+    nodeBinding: 'App.selectedNode',
+});

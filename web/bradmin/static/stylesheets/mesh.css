@@ -5,3 +5,6 @@
 .link {
     stroke: black;
 }
+.selected {
+    border: solid red 2px;
+}

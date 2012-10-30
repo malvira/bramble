@@ -14,16 +14,22 @@ ${nav.bar()}
 <link rel="stylesheet" href="static/stylesheets/mesh.css">
 
 <div class="container">
-  <div id="mesh" class="twelve columns"></div>
-  <div id="info" class="four columns" style="overflow: auto">
+  <div id="mesh" class="ten columns"></div>
+  <div id="nodes" class="six columns clearfix">
 
-    <script type="text/x-handlebars">
-      {{#view App.viewInfoMesh }}
-      {{#each node}}
-      {{eui}}<br>
-      {{/each}}
-      {{/view}}
-    </script>
+    <div id="list" class="six columns" style="overflow: auto">
+      <script type="text/x-handlebars">
+	{{collection contentBinding="App.nodes" itemViewClass="App.nodeItemView"}}
+      </script>
+    </div>
+
+    <div id="details" class="six columns">
+      <script type="text/x-handlebars">
+	{{#view App.selectedNodeView}}
+	<h3>{{view.node.eui}}</h3>
+	{{/view}}
+      </script>
+    </div>
 
   </div>
 </div>
