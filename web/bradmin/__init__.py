@@ -20,18 +20,35 @@ try:
 except IOError:
     pass
 
-# load config from the database
+
 from fileStore import *
 db = fileStore(app.config['DB_ROOT'])
+
+# load config from the database
 conf = None
 try:
-    conf = json.loads(db.get('conf'))    
+    conf = json.loads(db.get('conf/bradmin'))    
 except IOError:
     # load default config
     conf = { 
         'password': bcrypt.generate_password_hash('default')
         }
-    db.store('conf', json.dumps(conf, sort_keys=True, indent=4))
+    db.store('conf/bradmin', json.dumps(conf, sort_keys=True, indent=4))
+
+# make a default lowpan config
+lowpan = None
+try:
+    lowpan = json.loads(db.get('conf/lowpan'))    
+except IOError:
+    # load default config
+    lowpan = { 
+        "url" : "http://couch-0-ord.devl.org:5000", 
+        "eui" : None,
+        "password" : None,
+        "realm" : "lowpan",
+        "gogo-conf": "/etc/gogoc"
+        }
+    db.store('conf/lowpan', json.dumps(lowpan, sort_keys=True, indent=4))
 
 application = app
 

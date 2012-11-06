@@ -20,6 +20,6 @@ def settings():
 @login_required
 def newpass():
     conf['password'] = bcrypt.generate_password_hash(request.json['password'])
-    db.store('conf', json.dumps(conf, sort_keys=True, indent=4))
+    db.store('conf/bradmin', json.dumps(conf, sort_keys=True, indent=4))
     return json.dumps(dict(status = 'ok'))
 
