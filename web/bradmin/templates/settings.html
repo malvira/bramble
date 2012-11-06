@@ -23,29 +23,29 @@ ${nav.bar()}
 <div class="six columns offset-by-six clearfix">
   <div class="four columns alpha">New Password:</div>
   <div class="four columns alpha">
-    {{view Em.TextField valueBinding="App.pass1" type="password"}}
+    {{view Em.TextField valueBinding="App.password.pass1" type="password"}}
   </div>
   
   <div class="four columns alpha">Repeat New Password:</div>
   
   <div class="four columns alpha">
-    {{view Em.TextField valueBinding="App.pass2" type="password"}}	
+    {{view Em.TextField valueBinding="App.password.pass2" type="password"}}	
   </div>
   
   <div class="four columns alpha">
     <input type=submit value="Change Password" 
 	   style="margin-bottom: 0"
-	   {{bindAttr disabled="App.passbad"}}
-	   {{action "changepass" target="App"}} >
+	   {{bindAttr disabled="App.password.bad"}}
+	   {{action "changepass" target="App.password"}} >
   </div>
   
   <div class="two columns omega">
     <img src="static/images/ajax-loader.gif" class="spinner" 
-	 {{bindAttr class="App.passChangeWait:visible"}}>
+	 {{bindAttr class="App.password.ChangeWait:visible"}}>
   </div>
   
   <div class="four columns alpha">
-    {{#if App.match}}
+    {{#if App.password.match}}
     <div style="text-align: center; height: 5ex;"></div>
     {{else}}
     {{#view App.FadeInView contentBinding="this"}}
