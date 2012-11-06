@@ -2,9 +2,11 @@ from flask import request, render_template, session, flash, redirect, url_for, c
 from flask.ext.login import LoginManager, login_user, current_user, UserMixin, login_required, logout_user
 from flask.ext.mako import MakoTemplates
 from flask.ext.mako import render_template as render_mako
+from flaskext.bcrypt import Bcrypt
 
-from bradmin import app
+from bradmin import app, conf
 
+bcrypt = Bcrypt(app)
 mako = MakoTemplates(app)
 login_manager = LoginManager()
 login_manager.setup_app(app)
@@ -12,7 +14,7 @@ login_manager.setup_app(app)
 class LoginUser(UserMixin):
     def __init__(self, id='admin'):                
         self.id = id
-        self.password = 'default'
+        self.password = conf['password']
 
         UserMixin.__init__(self)
 
@@ -30,7 +32,7 @@ def login():
     if request.method == 'POST':
         try:
             user = LoginUser()
-            if user.password == request.form['password']:
+            if bcrypt.check_password_hash(user.password, request.form['password']):
                 doLogin(user)
                 return redirect(url_for('index'))
             else:

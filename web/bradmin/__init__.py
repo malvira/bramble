@@ -23,6 +23,7 @@ except IOError:
 # load config from the database
 from fileStore import *
 db = fileStore(app.config['DB_ROOT'])
+conf = None
 try:
     conf = json.loads(db.get('conf'))    
 except IOError:
