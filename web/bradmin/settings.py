@@ -23,3 +23,9 @@ def newpass():
     db.store('conf/bradmin', json.dumps(conf, sort_keys=True, indent=4))
     return json.dumps(dict(status = 'ok'))
 
+@app.route("/settings/lowpan", methods=['POST','GET'])
+@login_required
+def lowpan():
+    if request.method == 'GET':
+        return db.get('conf/lowpan')
+

@@ -4,6 +4,19 @@ var App = Em.Application.create({
     ready: function () { console.log('ready'); App.init()},
 });
 
+App.init = function() {
+    $.ajax({
+	url: "settings/lowpan",  
+	type: "GET",  
+	dataType: "json",  
+	contentType: "application/json",  
+	success: function(data) {
+	    App.lowpan.set('url', data.url);
+	    App.lowpan.set('apikey', data.password);
+	}
+    });  
+}
+
 App.password = Ember.Object.create({
     ChangeWait: false,
     ChangeState: 'none',
@@ -50,6 +63,7 @@ App.FadeInView = Ember.View.extend({
     }
 });
 
-App.init = function() {
-}
-
+App.lowpan = Ember.Object.create({
+    url: null,
+    apikey: null
+});

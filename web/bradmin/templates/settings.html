@@ -71,7 +71,11 @@ ${nav.bar()}
 <div class="six columns offset-by-six clearfix">
   <div class="four columns alpha">Lowpan URL:</div>
   <div class="four columns alpha">
-    {{view Em.TextField valueBinding="App.lowpan.endpoint"}}
+    {{view Em.TextField valueBinding="App.lowpan.url"}}
+  </div>
+  <div class="four columns alpha">API Key:</div>
+  <div class="four columns alpha">
+    {{view Em.TextField valueBinding="App.lowpan.apikey"}}
   </div>
 </div>
 
