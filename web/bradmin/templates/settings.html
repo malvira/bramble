@@ -77,6 +77,10 @@ ${nav.bar()}
   <div class="four columns alpha">
     {{view Em.TextField valueBinding="App.lowpan.apikey"}}
   </div>
+  <div class="six columns">
+    <input type=submit value="Save"
+	   {{action "save" target="App.lowpan"}} >
+  </div>
 </div>
 
 </script>

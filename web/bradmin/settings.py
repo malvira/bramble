@@ -28,4 +28,9 @@ def newpass():
 def lowpan():
     if request.method == 'GET':
         return db.get('conf/lowpan')
-
+    elif request.method == 'POST':
+        lowpan = json.loads(db.get('conf/lowpan'))
+        for a in request.json:
+            lowpan[a] = request.json[a]
+            db.store('conf/lowpan', json.dumps(lowpan, sort_keys=True, indent=4))
+        return json.dumps(dict(status = 'ok'))

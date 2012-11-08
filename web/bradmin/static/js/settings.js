@@ -26,12 +26,12 @@ App.password = Ember.Object.create({
 	if(this.get('pass1') == this.get('pass2'))
 	{
 	    this.set('ChangeWait', true);
-	    $.ajax({  
-		url: "settings/newpass",  
-		type: "POST",  
-		dataType: "json",  
-		contentType: "application/json",  
-		data: JSON.stringify({ "password": this.get('pass1') }),  
+	    $.ajax({
+		url: "settings/newpass",
+		type: "POST",
+		dataType: "json",
+		contentType: "application/json",
+		data: JSON.stringify({ "password": this.get('pass1') }),
 		success: function(data) {
 		    App.password.set('ChangeWait', false);
 		    App.password.set('pass1','');
@@ -65,5 +65,24 @@ App.FadeInView = Ember.View.extend({
 
 App.lowpan = Ember.Object.create({
     url: null,
-    apikey: null
+    apikey: null,
+    save: function() {
+	console.log("lowpan save")
+	console.log(this.get('url') + this.get('apikey'))
+	$.ajax({
+	    url: "settings/lowpan",
+	    type: "POST",
+	    dataType: "json",
+	    contentType: "application/json",
+	    data: JSON.stringify({
+		"url": this.get('url'),
+		"password": this.get('apikey')
+	    }),
+	    success: function(data) {
+		App.password.set('ChangeWait', false);
+		App.password.set('pass1','');
+		App.password.set('pass2','');
+	    }
+	});
+    }
 });
