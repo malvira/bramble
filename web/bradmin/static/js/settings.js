@@ -67,8 +67,9 @@ App.lowpan = Ember.Object.create({
     url: null,
     apikey: null,
     save: function() {
-	console.log("lowpan save")
-	console.log(this.get('url') + this.get('apikey'))
+	console.log("lowpan save");
+	console.log(this.get('url') + this.get('apikey'));
+	this.checkAPI();
 	$.ajax({
 	    url: "settings/lowpan",
 	    type: "POST",
@@ -84,5 +85,10 @@ App.lowpan = Ember.Object.create({
 		App.password.set('pass2','');
 	    }
 	});
-    }
+    },
+    checkAPI: function () {
+	console.log("check api called")
+    },
+    apiok: false,
 });
+
