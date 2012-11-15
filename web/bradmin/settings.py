@@ -1,6 +1,6 @@
 import json
 
-from flask import render_template, redirect, url_for, request
+from flask import render_template, redirect, url_for, request, jsonify
 from flask.ext.login import login_required
 from flask.ext.mako import MakoTemplates
 from flask.ext.mako import render_template as render_mako
@@ -33,4 +33,4 @@ def lowpan():
         for a in request.json:
             lowpan[a] = request.json[a]
             db.store('conf/lowpan', json.dumps(lowpan, sort_keys=True, indent=4))
-        return json.dumps(dict(status = 'ok'))
+        return jsonify(status = 'ok')

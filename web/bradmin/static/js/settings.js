@@ -87,7 +87,16 @@ App.lowpan = Ember.Object.create({
 	});
     },
     checkAPI: function () {
-	console.log("check api called")
+	console.log("check api called");
+	$.ajax({
+	    url: this.get('url'),
+	    type: 'GET',
+	    dataType: "json",
+	    data: { apikey: this.get('apikey') },
+	    success: function(data) {
+		console.log(data);
+	    }
+	});
     },
     apiok: false,
 });
