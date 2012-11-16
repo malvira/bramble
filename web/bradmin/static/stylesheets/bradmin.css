@@ -43,7 +43,7 @@ div.login {
 
 .spinner {
     display: none;
-    padding: 7% 0;
+    padding: 0% 0;
 }
 
 .spinner.visible {
@@ -52,4 +52,16 @@ div.login {
 
 .cjust {
     text-align: center;
+}
+
+.success {
+    background: #A8F7AD;
+    color: #198C21;
+    border-radius: 10px;
+}
+
+.failure {
+    background: #FF8793;
+    color: #AD0516;
+    border-radius: 10px;
 }

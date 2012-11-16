@@ -4,7 +4,7 @@ var App = Em.Application.create({
     ready: function () { console.log('ready'); App.init()},
 });
 
-App.init = function() {
+App.init = function() {    
     $.ajax({
 	url: "settings/lowpan",  
 	type: "GET",  
@@ -13,6 +13,7 @@ App.init = function() {
 	success: function(data) {
 	    App.lowpan.set('url', data.url);
 	    App.lowpan.set('apikey', data.password);
+	    App.lowpan.checkAPI();
 	}
     });  
 }
@@ -64,6 +65,7 @@ App.FadeInView = Ember.View.extend({
 });
 
 App.lowpan = Ember.Object.create({
+    saveWait: false,
     url: null,
     apikey: null,
     save: function() {
@@ -80,14 +82,13 @@ App.lowpan = Ember.Object.create({
 		"password": this.get('apikey')
 	    }),
 	    success: function(data) {
-		App.password.set('ChangeWait', false);
-		App.password.set('pass1','');
-		App.password.set('pass2','');
+		console.log("save ok");
 	    }
 	});
     },
     checkAPI: function () {
 	console.log("check api called");
+	App.lowpan.set('saveWait', true);
 	$.ajax({
 	    url: this.get('url'),
 	    type: 'GET',
@@ -95,6 +96,16 @@ App.lowpan = Ember.Object.create({
 	    data: { apikey: this.get('apikey') },
 	    success: function(data) {
 		console.log(data);
+		App.lowpan.set('saveWait', false);		
+		if(data.status == 'ok') {
+		    App.lowpan.set('apiok', true);
+		} else { 
+		    App.lowpan.set('apiok', false);
+		}
+	    },
+	    error: function(data) {
+		App.lowpan.set('saveWait', false);
+		App.lowpan.set('apiok', false);		
 	    }
 	});
     },

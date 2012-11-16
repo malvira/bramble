@@ -56,31 +56,57 @@ ${nav.bar()}
     {{/if}}
   </div>
 
+</div>
 
 </script>
+
+
 
 <hr>
 
 <script type="text/x-handlebars">
-<div class="eight columns offset-by-four">
-  <h3 class="cjust">Lowpan API</h3>
-</div>
+<div class="container">
 
-<br class="clear"/>
+  <div class="sixteen columns">
+    <h3 class="cjust">Lowpan API</h3>
+  </div>
 
-<div class="six columns offset-by-six clearfix">
-  <div class="four columns alpha">Lowpan URL:</div>
-  <div class="four columns alpha">
+  <div class="four columns offset-by-six">Lowpan URL:</div>
+  <div class="four columns offset-by-six">
     {{view Em.TextField valueBinding="App.lowpan.url"}}
   </div>
-  <div class="four columns alpha">API Key:</div>
-  <div class="four columns alpha">
+
+  <div class="four columns offset-by-six">API Key:</div>
+  <div class="four columns offset-by-six">
     {{view Em.TextField valueBinding="App.lowpan.apikey"}}
   </div>
-  <div class="six columns">
+  
+  <div class="four columns offset-by-six">
     <input type=submit value="Save"
 	   {{action "save" target="App.lowpan"}} >
+    <img src="static/images/ajax-loader.gif" class="spinner" 
+	 {{bindAttr class="App.lowpan.saveWait:visible"}}>
+
+    {{#if App.lowpan.saveWait}}
+    {{else}}
+      {{#if App.lowpan.apiok}}
+        {{#view App.FadeInView contentBinding="this"}}
+          <div class="success" style="text-align: center; height: 5ex;">
+            <p>Connection Good
+          </div>
+        {{/view}}
+      {{else}}
+        {{#view App.FadeInView contentBinding="this"}}
+          <div class="failure" style="text-align: center; height: 5ex;">
+            <p>Connection Failed
+          </div>
+        {{/view}}
+      {{/if}}
+    {{/if}}
+
   </div>
+  
+
 </div>
 
 </script>
@@ -100,4 +126,4 @@ ${nav.bar()}
 
 <hr>
 
-</div>
+
