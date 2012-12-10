@@ -5,15 +5,77 @@ Radio Settings
 </%block>
 
 <%block name="emberapp">
+<script src="static/js/radio.js"></script>
 </%block>
 
 <%namespace name="nav" file="nav.html"/>
 ${nav.bar()}
 <hr>
 
+<script type="text/x-handlebars">
+  <div class="container">
+
+    <div class="four columns offset-by-six"><h3>Presets</h3></div>
+    
+    <div class="one columns offset-by-six cjust"><input type=submit value="BR12" {{action "br12" target="App.preset"}}></div>
+    <div class="two columns cjust"><input type=submit value="PC w/Econotag" {{action "econotag" target="App.preset"}}></div>
+    <div class="one columns cjust"><input type=submit value="Cooja" {{action "cooja" target="App.preset"}}></div>
+
+    <div class="four columns offset-by-six"><h3>Settings</h3></div>
+    
+    <div class="four columns offset-by-six"><h4>Radio</h4></div>
+
+    <div class="four columns offset-by-six">Radio Firmware:</div>
+    <div class="four columns offset-by-six">
+      {{view Em.TextField valueBinding="App.radio.firmware"}}
+    </div>
+
+    <div class="four columns offset-by-six">Radio Reset Command:</div>
+    <div class="four columns offset-by-six">
+      {{view Em.TextField valueBinding="App.radio.resetcmd"}}
+    </div>
+
+    <div class="four columns offset-by-six">
+    <input type=submit value="Save"
+	   {{action "save" target="App.radio"}} >
+    </div>
+
+    <div class="four columns offset-by-six"><h4>Tunslip6</h4></div>
+
+    <div class="four columns offset-by-six">Tunslip6 Address:</div>
+    <div class="four columns offset-by-six">
+      {{view Em.TextField valueBinding="App.tunslip.address"}}
+    </div>
+
+    <div class="four columns offset-by-six">Tunslip6 device:</div>
+    <div class="four columns offset-by-six">
+      {{view Em.TextField valueBinding="App.tunslip.device"}}
+    </div>
+
+    <div class="four columns offset-by-six">Baud:</div>
+    <div class="four columns offset-by-six">
+      {{view Em.TextField valueBinding="App.tunslip.baud"}}
+    </div>
+
+    <div class="four columns offset-by-six">
+    <input type=submit value="Save"
+	   {{action "save" target="App.tunslip"}} >
+    </div>
+
+  </div>
+    
+  </div>
+</script>
+
 <div class="container">
 
-<h3>Things to spawn:</h3>
+
+<p>Presets button: BR12, PC w/Econotag, cooja
+
+<p>Firmware load command: "mc1322x-load -f /var/cache/br.bin -t %s -c '%s'" % (device, resetcmd)
+<p>Reset command (resetcmd): mcreset or bbmc -l redbee-econotag reset
+
+<p> have these be the cooja preset
 
 <p>java -mx512m -jar dist/cooja.jar -nogui=/home/malvira/contiki/rpl-test.csc 
 <p>PATH=$PATH:/sbin tunslip6 -v3 -a localhost -p 60001 aaaa::1/64
