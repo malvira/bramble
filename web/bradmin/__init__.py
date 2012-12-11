@@ -8,7 +8,7 @@ import json
 DEBUG = True
 SECRET_KEY = 'no so secret'
 CFG_FILE = '/etc/bradmin.cfg'
-DB_ROOT = '/var/cache/bradmin/db'
+CACHE_ROOT = '/var/cache/bradmin'
 
 app = Flask(__name__)
 bcrypt = Bcrypt(app)
@@ -22,7 +22,7 @@ except IOError:
 
 
 from fileStore import *
-db = fileStore(app.config['DB_ROOT'])
+db = fileStore(app.config['CACHE_ROOT'] + '/db')
 
 # load config from the database
 conf = None
@@ -64,3 +64,6 @@ import bradmin.mesh
 
 #API
 import bradmin.br
+
+#load up the radio
+bradmin.radio.load_radio()
