@@ -12,6 +12,10 @@ Radio Settings
 ${nav.bar()}
 <hr>
 
+<%
+   errmsg = {"resetcmd" : "Please provide a reset command"} 
+%>
+
 <script type="text/x-handlebars">
   <div class="container">
 
@@ -33,6 +37,14 @@ ${nav.bar()}
       </form>
       <input type=submit value="Reload"
 	     {{action "reload" target="App.radio"}} >
+      %if 'badupload' in error:
+          <div class="failure cjust">
+	    %for e in error['badupload']:
+	        ${errmsg[e]}<br>
+	    %endfor
+	  </div>
+      %endif
+
     </div>
 
     <div class="four columns offset-by-six">Radio Reset Command:</div>

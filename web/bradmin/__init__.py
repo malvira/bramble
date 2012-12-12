@@ -66,4 +66,7 @@ import bradmin.mesh
 import bradmin.br
 
 #load up the radio
-bradmin.radio.load_radio()
+try:
+    bradmin.radio.load_radio()
+except IOError:
+    pass

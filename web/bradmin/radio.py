@@ -45,8 +45,11 @@ def radio():
     if request.method == 'POST':
         f = request.files['file']
         f.save(os.path.join(app.config['CACHE_ROOT'], 'br.bin'))
-        load_radio()
-    return render_mako('radio.html')
+        try:
+            load_radio()
+        except IOError:
+            return render_mako('radio.html', error={'badupload':['resetcmd']} )
+    return render_mako('radio.html', error={})
 
 @app.route("/radio/radio", methods=['POST','GET'])
 @login_required
