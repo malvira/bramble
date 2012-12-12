@@ -67,19 +67,14 @@ ${nav.bar()}
   </div>
 </script>
 
+<%doc>
 <div class="container">
 
-
-<p>Presets button: BR12, PC w/Econotag, cooja
-
-<p>Firmware load command: "mc1322x-load -f /var/cache/br.bin -t %s -c '%s'" % (device, resetcmd)
-<p>Reset command (resetcmd): mcreset or bbmc -l redbee-econotag reset
-
-<p> have these be the cooja preset
 
 <p>java -mx512m -jar dist/cooja.jar -nogui=/home/malvira/contiki/rpl-test.csc 
 <p>PATH=$PATH:/sbin tunslip6 -v3 -a localhost -p 60001 aaaa::1/64
 <p>tunslip6 should be in path and setuid root
+<li> Print output of <strong>ps aux |grep java |grep cooja</strong> to get status of cooja sim
 
 <h3>TODO:</h3>
 <ul>
@@ -88,13 +83,13 @@ ${nav.bar()}
 <li> have an option to relay that info to Lowpan (do this by default)
 <li> have a way to select between options: cooja, econotag on USB, or M12 module on serial port
 <li> have br firmware uploadable
-<li> Print output of <strong>ps aux |grep java |grep cooja</strong> to get status of cooja sim
+
 <li> Do this same for tunslip6
 <li> configure things like
   <ul>
     <li> cooja sim to run (e.g. rpl-test.csc)
-    <li> tunslip prefix (with an option to pull from a lowpan tunnel
   </ul>
 </ul>
 
 </div>
+</%doc>

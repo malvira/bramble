@@ -50,7 +50,7 @@ def radio():
 
 @app.route("/radio/radio", methods=['POST','GET'])
 @login_required
-def settings():
+def radiosettings():
     if request.method == 'GET':
         return db.get('conf/radio')
     elif request.method == 'POST':
