@@ -64,6 +64,7 @@ import bradmin.mesh
 
 #API
 import bradmin.br
+import bradmin.coap
 
 #load up the radio
 try:

@@ -2,10 +2,60 @@ var App = Em.Application.create({
     ready: function () { console.log('ready'); App.init()},
     channel: null,
     pollCount: 0,
+    brip: "aaaa::205:c2a:8c9e:f00",
 });
 
 App.init = function() {
     App.poll();
+
+    $.ajax({  
+	url: "radio/ip",  
+	type: "GET",  
+	dataType: "json",  
+	contentType: "application/json",  
+	success: function(data) {
+	    console.log(data);
+	    App.set('brip', data[0]);
+	}
+    });  
+    
+    $.ajax({  
+	url: "coap",  
+	type: "POST",  
+	dataType: "json",  
+	contentType: "application/json",  
+	data: JSON.stringify({ 
+	    "ip": App.get('brip'),
+	    "method": "GET",
+	    "path": "/rplinfo/routes"
+	}),  
+	success: function(data) {
+	    resp = JSON.parse(data.response);
+	    routes = resp.routes;
+	    routes.forEach(function(r) {
+		// this is a bit of a hack
+		// we want to deal with euis but we get routes back from the border router
+		// assume that the IP addresses are derived from the IID and assume the last 64bits
+		// also assume the :: isn't in the IID
+		elts = r.dest.split(':');
+		// pad each with leading zeros
+		dest = elts.slice(elts.length-4,elts.length)
+
+		dest.forEach(function(i) {
+		    var h = parseInt(i, 16);
+		    this[this.indexOf(i)] = ("0000" + h.toString(16)).substr(-4);
+		}, dest);
+
+		dest = dest.join('');
+		
+		n = App.node.create({ eui: dest, addr: r.dest });
+		App.nodes.addIfNew(n);
+		window.addNode(n);
+		n.getParents();		
+	    })
+	}
+    });  
+
 };
 
 App.nodes = Em.ArrayController.create({
@@ -47,6 +97,7 @@ App.nodeItemView = Ember.View.extend({
 App.selectedNode = null;
 App.node = Em.Object.extend({
     eui: null,
+    addr: null,
     selected: false,
     focus: false,
     select: function() {
@@ -58,6 +109,35 @@ App.node = Em.Object.extend({
 	App.set('selectedNode', this);
 	var eui = App.get('selectedNode').get('eui');
 	window.mesh.selectAll("#eui" + eui).style("stroke", "red");
+    },
+    getParents: function() {
+	var eui = this.eui;
+	$.ajax({  
+	    url: "coap",  
+	    type: "POST",  
+	    dataType: "json",  
+	    contentType: "application/json",  
+	    data: JSON.stringify({ 
+		"ip": this.get('addr'),
+		"method": "GET",
+		"path": "/rplinfo/parents"
+	    }),
+	    success: function(data) {
+		resp = JSON.parse(data.response);
+		resp.parents.forEach(function(p) {
+		    window.addNode(p);
+		    n = App.node.create({ eui: p.eui })
+		    App.nodes.addIfNew(n)
+
+		    var edge = {};
+		    edge.etx = p.etx/128;
+		    edge.source = eui;
+		    edge.target = p.eui;
+		    edge.pref = p.pref;
+		    window.addEdge(edge);
+		});
+	    }
+	});  
     }
 });
 

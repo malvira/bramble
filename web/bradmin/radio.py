@@ -1,6 +1,7 @@
 import os
 import json
 import subprocess
+import time
 
 from flask import render_template, redirect, url_for, request, jsonify
 from flask.ext.login import login_required
@@ -37,6 +38,7 @@ def load_radio():
     radio = json.loads(db.get('conf/radio'))
     tunslip = json.loads(db.get('conf/tunslip'))
     subprocess.call(['mc1322x-load', '-e', '-r', 'none', '-f', os.path.join(app.config['CACHE_ROOT'],'br.bin'), '-t', tunslip['device'], '-c', radio['resetcmd']])
+    time.sleep(1)
     os.system("tunslip6 -v3 -s %s %s > %s &" % (tunslip['device'], tunslip['address'], os.path.join(app.config['CACHE_ROOT'],'tunslip6.log')))
 
 @app.route("/radio", methods=['GET', 'POST'])
