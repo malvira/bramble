@@ -26,11 +26,4 @@ def newpass():
 @app.route("/settings/lowpan", methods=['POST','GET'])
 @login_required
 def lowpan():
-    if request.method == 'GET':
-        return db.get('conf/lowpan')
-    elif request.method == 'POST':
-        lowpan = json.loads(db.get('conf/lowpan'))
-        for a in request.json:
-            lowpan[a] = request.json[a]
-            db.store('conf/lowpan', json.dumps(lowpan, sort_keys=True, indent=4))
-        return jsonify(status = 'ok')
+    return rest.jsonGetSet('conf/lowpan', request)
