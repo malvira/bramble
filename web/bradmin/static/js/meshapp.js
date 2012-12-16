@@ -2,60 +2,80 @@ var App = Em.Application.create({
     ready: function () { console.log('ready'); App.init()},
     channel: null,
     pollCount: 0,
-    brip: "aaaa::205:c2a:8c9e:f00",
+    brip: null,
+    getIP: function() {
+	$.ajax({  
+	    url: "radio/ip",  
+	    type: "GET",  
+	    dataType: "json",  
+	    contentType: "application/json",  
+	    success: function(data) {
+		if(data.status == 'error') { 
+		    window.setTimeout(App.getIP, 1000); 
+		    return; 
+		}
+		try {
+		    console.log("get ip data");
+		    console.log(data);
+		    App.set('brip', data.addrs[0]);
+		    console.log(App.get('brip'));
+		    App.refreshNodes();
+		} catch(e) {
+		    window.setTimeout(App.getIP, 1000); 
+		}
+	    },
+	    error: function() {
+		window.setTimeout(App.getIP, 1000);
+	    }
+	});  
+    },
+    refreshNodes: function() {	
+	if(App.get('brip') == null) { return; }
+	$.ajax({  
+	    url: "coap",  
+	    type: "POST",  
+	    dataType: "json",  
+	    contentType: "application/json",  
+	    data: JSON.stringify({ 
+		"ip": App.get('brip'),
+		"method": "GET",
+		"path": "/rplinfo/routes"
+	    }),  
+	    success: function(data) {
+		resp = JSON.parse(data.response);
+		routes = resp.routes;
+		routes.forEach(function(r) {
+		    // this is a bit of a hack
+		    // we want to deal with euis but we get routes back from the border router
+		    // assume that the IP addresses are derived from the IID and assume the last 64bits
+		    // also assume the :: isn't in the IID
+		    elts = r.dest.split(':');
+		    // pad each with leading zeros
+		    dest = elts.slice(elts.length-4,elts.length)
+		    
+		    dest.forEach(function(i) {
+			var h = parseInt(i, 16);
+			this[this.indexOf(i)] = ("0000" + h.toString(16)).substr(-4);
+		    }, dest);
+		    
+		    dest = dest.join('');
+		    
+		    n = App.node.create({ eui: dest, addr: r.dest });
+		    App.nodes.addIfNew(n);
+		    window.addNode(n);
+		    n.getParents();		
+		})
+	    }
+	});  	
+    }
+
 });
 
+
 App.init = function() {
+    App.getIP();
+    window.setInterval(App.refreshNodes, 10000);
     App.poll();
-
-    $.ajax({  
-	url: "radio/ip",  
-	type: "GET",  
-	dataType: "json",  
-	contentType: "application/json",  
-	success: function(data) {
-	    console.log(data);
-	    App.set('brip', data[0]);
-	}
-    });  
-    
-    $.ajax({  
-	url: "coap",  
-	type: "POST",  
-	dataType: "json",  
-	contentType: "application/json",  
-	data: JSON.stringify({ 
-	    "ip": App.get('brip'),
-	    "method": "GET",
-	    "path": "/rplinfo/routes"
-	}),  
-	success: function(data) {
-	    resp = JSON.parse(data.response);
-	    routes = resp.routes;
-	    routes.forEach(function(r) {
-		// this is a bit of a hack
-		// we want to deal with euis but we get routes back from the border router
-		// assume that the IP addresses are derived from the IID and assume the last 64bits
-		// also assume the :: isn't in the IID
-		elts = r.dest.split(':');
-		// pad each with leading zeros
-		dest = elts.slice(elts.length-4,elts.length)
-
-		dest.forEach(function(i) {
-		    var h = parseInt(i, 16);
-		    this[this.indexOf(i)] = ("0000" + h.toString(16)).substr(-4);
-		}, dest);
-
-		dest = dest.join('');
-		
-		n = App.node.create({ eui: dest, addr: r.dest });
-		App.nodes.addIfNew(n);
-		window.addNode(n);
-		n.getParents();		
-	    })
-	}
-    });  
-
 };
 
 App.nodes = Em.ArrayController.create({
@@ -110,8 +130,12 @@ App.node = Em.Object.extend({
 	var eui = App.get('selectedNode').get('eui');
 	window.mesh.selectAll("#eui" + eui).style("stroke", "red");
     },
+    clearEdges: function() {
+	console.log(this.eui + " clear edges");
+    },
     getParents: function() {
 	var eui = this.eui;
+	var n = this
 	$.ajax({  
 	    url: "coap",  
 	    type: "POST",  
@@ -123,19 +147,34 @@ App.node = Em.Object.extend({
 		"path": "/rplinfo/parents"
 	    }),
 	    success: function(data) {
-		resp = JSON.parse(data.response);
-		resp.parents.forEach(function(p) {
-		    window.addNode(p);
-		    n = App.node.create({ eui: p.eui })
-		    App.nodes.addIfNew(n)
+		
+		try
+		{
+		    var resp = JSON.parse(data.response);
+		    resp.parents.forEach(function(p) {
+			window.addNode(p);
+			n = App.node.create({ eui: p.eui })
+			App.nodes.addIfNew(n)
+			
+			var edge = {};
+			edge.etx = p.etx/128;
+			edge.source = eui;
+			edge.target = p.eui;
+			edge.pref = p.pref;
+			window.addEdge(edge);
+		    });
+		}
+		catch(e)
+		{
+		    if (data.response == '') {
+			// should remove all this nodes edges here
+			n.clearEdges();
+		    } else {
+			console.log('invalid json');
+			console.log(data.response);
+		    }
+		}
 
-		    var edge = {};
-		    edge.etx = p.etx/128;
-		    edge.source = eui;
-		    edge.target = p.eui;
-		    edge.pref = p.pref;
-		    window.addEdge(edge);
-		});
 	    }
 	});  
     }

@@ -56,8 +56,14 @@ function updateMesh() {
 	.data(links)
 	.enter().insert("line", ".node")
 	.order()
-	.attr("class", "link");
-
+	.attr("class", function(d) { 
+	    if (d.pref == true) 
+	    {
+		return "link preferred"
+	    } else {
+		return "link normal"
+	    };});
+	    
     node = svg.selectAll(".node")
     	.data(nodes)
     	.enter().append("circle")
@@ -84,7 +90,7 @@ var force;
     window.mesh = svg;
 
     force = d3.layout.force()
-	.linkDistance(function(d) { if (d.etx > 1 ) { return d.etx * 50; } else { return 25; }})
+	.linkDistance(function(d) { if (d.etx > 1 ) { return d.etx * 100; } else { return 75; }})
 	.charge(-100)
 	.gravity(0.01)
 	.size([$("#mesh").width(), $(window).height()]);

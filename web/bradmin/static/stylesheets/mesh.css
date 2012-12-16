@@ -2,9 +2,15 @@
     stroke: black;
     fill: white;
 }
-.link {
+.link.preferred {
     stroke: black;
+    stroke-width: 4;
 }
+
+.link.normal {
+    stroke: gray;
+}
+
 .selected {
     border: solid red 2px;
 }

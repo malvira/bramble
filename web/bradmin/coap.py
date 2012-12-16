@@ -16,7 +16,9 @@ def doCoap():
         return jsonify(response=get('coap://[%s]/%s' % (r['ip'], r['path'])).rstrip())
 
 def get(url):
-    return subprocess.check_output(['coap-client', url])
+    # time out coap after 10 sec
+    # contiki default is 2 sec and 4 retries
+    return subprocess.check_output(['coap-client', '-B', '10', url])
 
 if __name__ == "__main__":
     import sys
