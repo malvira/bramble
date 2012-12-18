@@ -73,9 +73,65 @@ var App = Em.Application.create({
 
 
 App.init = function() {
-    App.getIP();
-    window.setInterval(App.refreshNodes, 10000);
+//    App.getIP();
+//    window.setInterval(App.refreshNodes, 10000);
     App.poll();
+
+    var foo = ['1','2','3'];
+    console.log(foo);
+    foo.removeObject(foo[1]);
+    console.log(foo);
+
+    var a = {};
+    a.eui = 'a'
+
+    var b = {};
+    b.eui = 'b'
+    
+    var c = {};
+    c.eui = 'c'
+
+    window.addNode(a);
+    window.addNode(b);
+    window.addNode(c);
+
+    var ab = {};
+    ab.etx = 1;
+    ab.source = window.nodeFromEUI(a.eui);
+    ab.target = window.nodeFromEUI(b.eui);
+    ab.pref = false;
+
+    var bc = {};
+    bc.etx = 1;
+    bc.source = window.nodeFromEUI(c.eui);
+    bc.target = window.nodeFromEUI(b.eui);
+    bc.pref = false;
+
+    var ca = {};
+    ca.etx = 1;
+    ca.source = window.nodeFromEUI(a.eui);
+    ca.target = window.nodeFromEUI(c.eui);
+    ca.pref = true;
+
+    window.addEdge(ab);
+    window.addEdge(bc);
+    window.addEdge(ca);  
+
+    var newca = {};
+    newca.etx = 1;
+    newca.source = window.nodeFromEUI(a.eui);
+    newca.target = window.nodeFromEUI(c.eui);
+    newca.pref = false;
+//    window.addEdge(newca);  
+
+    ab.etx = 2
+    window.setTimeout(function () { window.addEdge(ab); }, 1000);
+
+    window.setTimeout(function () { window.removeEdge(bc); }, 2000);
+
+    window.setTimeout(function () { window.removeNode('a'); }, 3000);
+
+
 };
 
 App.nodes = Em.ArrayController.create({
@@ -158,8 +214,8 @@ App.node = Em.Object.extend({
 			
 			var edge = {};
 			edge.etx = p.etx/128;
-			edge.source = eui;
-			edge.target = p.eui;
+			edge.source = window.nodeFromEUI(eui);
+			edge.target = window.nodeFromEUI(p.eui);
 			edge.pref = p.pref;
 			window.addEdge(edge);
 		    });

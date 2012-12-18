@@ -9,6 +9,7 @@
 
 .link.normal {
     stroke: gray;
+    stroke-width: 2;
 }
 
 .selected {
