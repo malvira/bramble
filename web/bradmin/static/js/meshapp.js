@@ -72,66 +72,59 @@ var App = Em.Application.create({
 });
 
 
+App.randomMeshAction = function() {
+    var ran = Math.floor(Math.random()*3)
+    if (ran == 1) {
+	// node
+	ran = Math.floor(Math.random()*5)
+	if (ran > 1) {
+	    // add node
+	    console.log("add node");
+	    var n = {};
+	    n.eui = String(Math.floor(Math.random()*32))	    
+	    console.log(n);
+	    addNode(n);
+	} else {
+	    // remove node
+	    console.log("remove node");
+	    var n = nodes[Math.floor(Math.random()*links.length)]
+	    console.log(n);
+	    if (n) { removeNode(n.eui); }
+	}
+    } else {
+	// edge
+	ran = Math.floor(Math.random()*5)
+	if (ran > 1) {
+	    // add edge
+	    console.log("add edge");
+	    var e = {};
+	    e.etx = Math.floor(Math.random()*4);
+	    e.source = nodes[Math.floor(Math.random()*nodes.length)];
+	    e.target = nodes[Math.floor(Math.random()*nodes.length)];
+	    ran = Math.floor(Math.random()*3)
+	    if (ran == 1) {
+		e.pref = false;
+	    } else {
+		e.pref = true;
+	    }
+	    console.log(e);
+	    addEdge(e);
+	} else {
+	    // remove edge
+	    console.log("remove edge");
+	    var e = links[Math.floor(Math.random()*links.length)]
+	    console.log(e);
+	    if (e) { removeEdge(e); }
+	}
+    }
+
+}
+
 App.init = function() {
-//    App.getIP();
-//    window.setInterval(App.refreshNodes, 10000);
+    App.getIP();
+    setInterval(App.refreshNodes, 10000);
     App.poll();
-
-    var foo = ['1','2','3'];
-    console.log(foo);
-    foo.removeObject(foo[1]);
-    console.log(foo);
-
-    var a = {};
-    a.eui = 'a'
-
-    var b = {};
-    b.eui = 'b'
-    
-    var c = {};
-    c.eui = 'c'
-
-    window.addNode(a);
-    window.addNode(b);
-    window.addNode(c);
-
-    var ab = {};
-    ab.etx = 1;
-    ab.source = window.nodeFromEUI(a.eui);
-    ab.target = window.nodeFromEUI(b.eui);
-    ab.pref = false;
-
-    var bc = {};
-    bc.etx = 1;
-    bc.source = window.nodeFromEUI(c.eui);
-    bc.target = window.nodeFromEUI(b.eui);
-    bc.pref = false;
-
-    var ca = {};
-    ca.etx = 1;
-    ca.source = window.nodeFromEUI(a.eui);
-    ca.target = window.nodeFromEUI(c.eui);
-    ca.pref = true;
-
-    window.addEdge(ab);
-    window.addEdge(bc);
-    window.addEdge(ca);  
-
-    var newca = {};
-    newca.etx = 1;
-    newca.source = window.nodeFromEUI(a.eui);
-    newca.target = window.nodeFromEUI(c.eui);
-    newca.pref = false;
-//    window.addEdge(newca);  
-
-    ab.etx = 2
-    window.setTimeout(function () { window.addEdge(ab); }, 1000);
-
-    window.setTimeout(function () { window.removeEdge(bc); }, 2000);
-
-    window.setTimeout(function () { window.removeNode('a'); }, 3000);
-
-
+//    setInterval(App.randomMeshAction, 1000);
 };
 
 App.nodes = Em.ArrayController.create({

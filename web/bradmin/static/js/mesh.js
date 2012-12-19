@@ -24,11 +24,7 @@ window.removeNode = function(eui) {
     var rmLinks = [];
 
     // find all the edges with this node and remove them
-    console.log("remove " + eui);
-    console.log(links);
-    links.forEach(function(l) { console.log(l.source.eui + l.target.eui); });
     links.forEach(function(l) {
-	console.log("conidering to remove " + l.target.eui + " or " + l.source.eui);
 	if (l.target.eui == eui || l.source.eui == eui) {
 	    rmLinks.pushObject(l);
 	}
@@ -61,8 +57,6 @@ window.addEdge = function(edge) {
     } else {
 	links.pushObject(edge);
     }
-    console.log(links);
-    links.forEach(function(l) { console.log(l.source.eui + l.target.eui); });
     updateMesh();
 };
 
