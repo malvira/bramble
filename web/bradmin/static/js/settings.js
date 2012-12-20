@@ -87,8 +87,10 @@ App.lowpan = Ember.Object.create({
 	});
     },
     checkAPI: function () {
-	console.log("check api called");
+	console.log("check api called");	
 	App.lowpan.set('saveWait', true);
+	this.set('url',this.get('url').replace(/\s/g, ''));
+	this.set('apikey',this.get('apikey').replace(/\s/g, ''));
 	$.ajax({
 	    url: this.get('url'),
 	    type: 'GET',

@@ -6,7 +6,7 @@ from flask.ext.mako import MakoTemplates
 from flask.ext.mako import render_template as render_mako
 from flaskext.bcrypt import Bcrypt
 
-from bradmin import app, db, conf
+from bradmin import app, db, conf, rest
 
 bcrypt = Bcrypt(app)
 mako = MakoTemplates(app)
