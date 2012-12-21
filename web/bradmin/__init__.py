@@ -35,21 +35,6 @@ except IOError:
         }
     db.store('conf/bradmin', json.dumps(conf, sort_keys=True, indent=4))
 
-# make a default lowpan config
-lowpan = None
-try:
-    lowpan = json.loads(db.get('conf/lowpan'))    
-except IOError:
-    # load default config
-    lowpan = { 
-        "url" : "http://couch-0-ord.devl.org:5000", 
-        "eui" : None,
-        "password" : None,
-        "realm" : "lowpan",
-        "gogo-conf": "/etc/gogoc"
-        }
-    db.store('conf/lowpan', json.dumps(lowpan, sort_keys=True, indent=4))
-
 application = app
 
 import bradmin.login
@@ -65,7 +50,19 @@ import bradmin.mesh
 #API
 import bradmin.br
 import bradmin.coap
+import bradmin.lowpan
 
+#detect distribution
+distro = 'arch'
+try:
+   with open('/etc/apt/sources.list') as f: 
+       distro = 'debian'
+except IOError as e:
+    pass
+
+#start up Lowpan
+bradmin.lowpan.init()
+    
 #load up the radio
 try:
     bradmin.radio.load_radio()

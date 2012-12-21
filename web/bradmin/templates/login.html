@@ -4,18 +4,22 @@
 Lowpan Border Router Login
 </%block>
 
-<div class="six columns offset-by-five login">
-<h2>Lowpan Router Login</h2>
+<div class="container">
 
-% if error:
-<p class=error><strong>Error:</strong> ${error}
-% endif
-
-  <form action="${url_for('login')}" method=post>
-    <dl>
-      <dt>Password:
-	<dd><input type=password name=password>
-	<dd><input type=submit value=Login>
-    </dl>
-  </form>
+  <div class="eight columns offset-by-four login">
+    <h2>Lowpan Router Login</h2>
+    
+    % if error:
+    <p class=error><strong>Error:</strong> ${error}
+      % endif
+      
+      <form action="${url_for('login')}" method=post>
+	<dl>
+	  <dt>Password:
+	    <dd><input type=password name=password>
+	    <dd><input type=submit value=Login>
+	</dl>
+      </form>
+  </div>
+  
 </div>

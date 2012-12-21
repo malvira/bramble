@@ -6,7 +6,7 @@ from flask.ext.mako import MakoTemplates
 from flask.ext.mako import render_template as render_mako
 from flaskext.bcrypt import Bcrypt
 
-from bradmin import app, db, conf, rest
+from bradmin import app, db, conf, rest, lowpan
 
 bcrypt = Bcrypt(app)
 mako = MakoTemplates(app)
@@ -25,5 +25,10 @@ def newpass():
 
 @app.route("/settings/lowpan", methods=['POST','GET'])
 @login_required
-def lowpan():
-    return rest.jsonGetSet('conf/lowpan', request)
+def lowpanEndpoint():
+    resp = rest.jsonGetSet('conf/lowpan', request)
+    if request.method == 'POST':
+        # Lowpan API might have changed.
+        # resync the border-router config with the cloud
+        lowpan.syncConfig()
+    return resp
