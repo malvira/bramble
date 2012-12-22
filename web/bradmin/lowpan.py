@@ -33,7 +33,7 @@ def init():
             }
         db.store('conf/lowpan', json.dumps(lowpanConf, sort_keys=True, indent=4))
 
-    if (lowpanConf['eui'] != None) and (lowpanConf['password'] != None):
+    if (lowpanConf['url'] != None) and (lowpanConf['password'] != None):
         syncConfig()
 
 def syncConfig():
