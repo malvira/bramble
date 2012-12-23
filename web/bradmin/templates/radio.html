@@ -16,7 +16,8 @@ ${nav.bar()}
    errmsg = {"resetcmd" : "Please provide a reset command"} 
 %>
 
-<script type="text/x-handlebars">
+<script data-template-name="main" type="text/x-handlebars">
+
   <div class="container">
 
     <div class="four columns offset-by-six"><h3>Presets</h3></div>
@@ -54,9 +55,10 @@ ${nav.bar()}
 
     <div class="four columns offset-by-six"><h4>Tunslip6</h4></div>
 
-    <div class="four columns offset-by-six">Tunslip6 Address:</div>
+    <div class="four columns offset-by-six">Fallback tunslip6 Address: 
+      <a id="tunslip-tip"><img class="tip" height="15ex" src="/static/images/question.svg"></a></div>
     <div class="four columns offset-by-six">
-      {{view Em.TextField valueBinding="App.tunslip.address"}}
+      {{view Em.TextField valueBinding="App.tunslip.address"}} 
     </div>
 
     <div class="four columns offset-by-six">Tunslip6 device:</div>
@@ -77,6 +79,9 @@ ${nav.bar()}
   </div>
     
   </div>
+
+{{trigger doToolTips}}
+
 </script>
 
 <%doc>

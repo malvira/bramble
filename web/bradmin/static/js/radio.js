@@ -26,7 +26,41 @@ App.init = function() {
 	    App.tunslip.set('baud', data.baud);
 	}
     });  
-}
+
+    App.mainView.append();
+
+};
+
+
+Ember.Handlebars.registerHelper('trigger', function (evtName, options) {
+
+    var options = arguments[arguments.length - 1],
+    hash = options.hash,
+    view = options.data.view,
+    target;
+
+    view = view.get('concreteView');
+
+    if (hash.target) {
+        target = Ember.Handlebars.get(this, hash.target, options);
+    } else {
+        target = view;
+    }
+
+    Ember.run.next(function () {
+        target.trigger(evtName);
+    });
+});
+
+
+App.mainViewClass = Ember.View.extend({
+    templateName: 'main',
+    doToolTips: function () {
+	$('#tunslip-tip').qtip({content: "This is prefix will be used when and ipv6 subnet in unavailable"});
+    }
+});
+
+App.mainView = App.mainViewClass.create();
 
 App.radio = Ember.Object.create ({
     firmware: null,

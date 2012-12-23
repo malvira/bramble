@@ -54,6 +54,10 @@ div.login {
     text-align: center;
 }
 
+.tip {
+    vertical-align: middle;
+}
+
 .success {
     background: #A8F7AD;
     color: #198C21;
