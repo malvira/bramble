@@ -37,9 +37,27 @@ def load_radio():
     subprocess.call(['killall', 'tunslip6'])
     radio = json.loads(db.get('conf/radio'))
     tunslip = json.loads(db.get('conf/tunslip'))
-    subprocess.call(['mc1322x-load', '-e', '-r', 'none', '-f', os.path.join(app.config['CACHE_ROOT'],'br.bin'), '-t', tunslip['device'], '-c', radio['resetcmd']])
+
+    devnull = open('/dev/null', 'w')
+    now = time.time()
+    result = None
+    while result is None and time.time() - now < 5:
+        try: 
+            result = subprocess.check_output(["ip", "-f", "inet6", "addr", "show", "tun", "scope", "global"], stderr=devnull)
+        except subprocess.CalledProcessError:
+            pass
     time.sleep(1)
-    os.system("tunslip6 -v3 -s %s %s > %s &" % (tunslip['device'], tunslip['address'], os.path.join(app.config['CACHE_ROOT'],'tunslip6.log')))
+
+    ipv6 = subprocess.check_output(["getbripv6.sh"]);
+
+    time.sleep(1)
+
+    if result is None:
+        print "Using fallback address %s/64" % (tunslip['address'])
+        os.system("tunslip6 -v3 -s %s %s > %s &" % (tunslip['device'], tunslip['address'], os.path.join(app.config['CACHE_ROOT'],'tunslip6.log')))
+    else:
+        print "Using tunnel address %s/64" % (ipv6.rstrip())
+        os.system("tunslip6 -v3 -s %s %s > %s &" % (tunslip['device'], ipv6 + '/64', os.path.join(app.config['CACHE_ROOT'],'tunslip6.log')))  
 
 @app.route("/radio", methods=['GET', 'POST'])
 @login_required
