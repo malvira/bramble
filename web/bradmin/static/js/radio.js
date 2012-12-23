@@ -56,7 +56,7 @@ Ember.Handlebars.registerHelper('trigger', function (evtName, options) {
 App.mainViewClass = Ember.View.extend({
     templateName: 'main',
     doToolTips: function () {
-	$('#tunslip-tip').qtip({content: "This is prefix will be used when and ipv6 subnet in unavailable"});
+	$('#tunslip-tip').qtip({content: "The fallback address will be use if an ipv6 address cannot be established"});
     }
 });
 
