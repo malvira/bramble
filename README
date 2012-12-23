@@ -1,3 +1,28 @@
+Installation
+============
+
+Stuff...
+
+Install libcoap and coap-client
+-------------------------------
+
+Get the latest version of libcoap that works with erbium:
+
+```
+git clone git://libcoap.git.sourceforge.net/gitroot/libcoap/libcoap
+cd libcoap
+git checkout a662f73
+autoconf
+./configure
+make
+cp examples/coap-client /usr/local/bin
+```
+
+compatibility after this version is broken
+
+Everthing under this is old
+===========================
+
 code to run on border-routers
 
 How to use:

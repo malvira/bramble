@@ -38,6 +38,8 @@ def load_radio():
     radio = json.loads(db.get('conf/radio'))
     tunslip = json.loads(db.get('conf/tunslip'))
 
+    subprocess.call(['mc1322x-load', '-e', '-r', 'none', '-f', os.path.join(app.config['CACHE_ROOT'],'br.bin'), '-t', tunslip['device'], '-c', radio['resetcmd']])
+
     devnull = open('/dev/null', 'w')
     now = time.time()
     result = None
@@ -48,7 +50,7 @@ def load_radio():
             pass
     time.sleep(1)
 
-    ipv6 = subprocess.check_output(["getbripv6.sh"]);
+    ipv6 = subprocess.check_output(["getbripv6.sh"]).rstrip();
 
     time.sleep(1)
 
@@ -56,8 +58,10 @@ def load_radio():
         print "Using fallback address %s/64" % (tunslip['address'])
         os.system("tunslip6 -v3 -s %s %s > %s &" % (tunslip['device'], tunslip['address'], os.path.join(app.config['CACHE_ROOT'],'tunslip6.log')))
     else:
-        print "Using tunnel address %s/64" % (ipv6.rstrip())
-        os.system("tunslip6 -v3 -s %s %s > %s &" % (tunslip['device'], ipv6 + '/64', os.path.join(app.config['CACHE_ROOT'],'tunslip6.log')))  
+        print "Using tunnel address %s/64" % (ipv6)
+        os.system("tunslip6 -v3 -s %s %s > %s &" % (tunslip['device'], ipv6 + '/64', os.path.join(app.config['CACHE_ROOT'],'tunslip6.log')))
+    
+    os.system("for i in /proc/sys/net/ipv6/conf/*; do cat $i/forwarding; done")
 
 @app.route("/radio", methods=['GET', 'POST'])
 @login_required
