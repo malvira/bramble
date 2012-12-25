@@ -17,22 +17,25 @@ ${nav.bar()}
   <div id="mesh" class="ten columns"></div>
   <div id="nodes" class="six columns clearfix">
 
+
     <div id="list" class="six columns" style="overflow: auto">
-      <script type="text/x-handlebars">
-	{{collection contentBinding="App.nodes" itemViewClass="App.nodeItemView"}}
+      <script type="text/x-handlebars" data-template-name="node-list">
+	{{#view}}
+	{{each App.nodes itemViewClass="App.nodeItemView"}}
+	{{/view}}
       </script>
     </div>
 
     <div id="details" class="six columns">
-      <script type="text/x-handlebars">
+      <script type="text/x-handlebars" data-template-name="node-details">
 	{{#view App.selectedNodeView}}
 	<h3>{{view.node.eui}}</h3>
 	{{/view}}
       </script>
     </div>
 
-  </div>
 </div>
+
 
 <script src="static/js/d3.v2.min.js"></script>
 <script src="static/js/raphael-min.js"></script> 

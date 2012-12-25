@@ -77,7 +77,7 @@ $(window).resize(function() {
 });
 
 function nodeClick(eui) {
-    node = App.nodes.findProperty('eui', eui);
+    node = nodeFromEUI(eui);
     node.select();
 }
 

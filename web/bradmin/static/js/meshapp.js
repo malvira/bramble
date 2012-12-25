@@ -15,10 +15,11 @@ var App = Em.Application.create({
 		    return; 
 		}
 		try {
-		    console.log("get ip data");
-		    console.log(data);
 		    App.set('brip', data.addrs[0]);
-		    console.log(App.get('brip'));
+		    breui = ipv6ToIID(App.get('brip'));
+		    n = App.node.create({ eui: breui, addr: App.get('brip') });
+		    App.nodes.addIfNew(n);
+		    window.addNode(n);
 		    App.refreshNodes();
 		} catch(e) {
 		    window.setTimeout(App.getIP, 1000); 
@@ -45,21 +46,9 @@ var App = Em.Application.create({
 		resp = JSON.parse(data.response);
 		routes = resp.routes;
 		routes.forEach(function(r) {
-		    // this is a bit of a hack
-		    // we want to deal with euis but we get routes back from the border router
-		    // assume that the IP addresses are derived from the IID and assume the last 64bits
-		    // also assume the :: isn't in the IID
-		    elts = r.dest.split(':');
-		    // pad each with leading zeros
-		    dest = elts.slice(elts.length-4,elts.length)
-		    
-		    dest.forEach(function(i) {
-			var h = parseInt(i, 16);
-			this[this.indexOf(i)] = ("0000" + h.toString(16)).substr(-4);
-		    }, dest);
-		    
-		    dest = dest.join('');
-		    
+
+		    dest = ipv6ToIID(r.dest);
+
 		    n = App.node.create({ eui: dest, addr: r.dest });
 		    App.nodes.addIfNew(n);
 		    window.addNode(n);
@@ -71,6 +60,24 @@ var App = Em.Application.create({
 
 });
 
+/* get IID from an ipv6 device */
+ipv6ToIID = function(ip) {
+    // this is a bit of a hack
+    // we want to deal with euis but we get routes back from the border router
+    // assume that the IP addresses are derived from the IID and assume the last 64bits
+    // also assume the :: isn't in the IID
+    elts = ip.split(':');
+    // pad each with leading zeros
+    ip = elts.slice(elts.length-4,elts.length)
+    
+    ip.forEach(function(i) {
+	var h = parseInt(i, 16);
+	this[this.indexOf(i)] = ("0000" + h.toString(16)).substr(-4);
+    }, ip);
+    
+    ip = ip.join('');
+    return ip;
+}
 
 App.randomMeshAction = function() {
     var ran = Math.floor(Math.random()*3)
@@ -121,6 +128,9 @@ App.randomMeshAction = function() {
 }
 
 App.init = function() {
+    App.nodeListView.appendTo('#list');
+    App.nodeDetailsView.appendTo('#details');
+
     App.getIP();
     setInterval(App.refreshNodes, 10000);
     App.poll();
@@ -129,39 +139,45 @@ App.init = function() {
 
 App.nodes = Em.ArrayController.create({
     content: [],
-    itemViewClass: Ember.View.extend({
-	template: Ember.Handlebars.compile("the letter: {{view.content}}")
-    }),
     addIfNew: function(n) {
 	if (this.findProperty('eui', n.eui) == null) {
-	    this.pushObject(n);	
+	    this.pushObject(n);
 	    var c = this.get('content');
 	    c.sort(function(a,b) {
 		return a.eui - b.eui;
 	    });
 	    this.replace(0,c.length,c);
-	}},
+	}
+    },
+});
+
+App.nodeListView = Ember.View.create({
+    templateName: 'node-list',
+});
+
+App.nodeDetailsView = Ember.View.create({
+    templateName: 'node-details',
 });
 
 App.nodeItemView = Ember.View.extend({
     classNameBindings: ['content.selected', 'content.focus'],
-    template: Ember.Handlebars.compile('{{content.eui}}'),
+    template: Ember.Handlebars.compile('{{view.content.eui}}'),
     mouseEnter: function(event, view) {
-	this.content.set('focus', true);
-	this.$().animate({
-	    backgroundColor: "#abcdef"
-	}, 250 );
+    	this.content.set('focus', true);
+    	this.$().animate({
+    	    backgroundColor: "#abcdef"
+    	}, 250 );
     },
     mouseLeave:  function(event, view) {
-	this.content.set('focus', false);
-	this.$().animate({
-	    backgroundColor: "#ffffff"
-	}, 75 );	
+    	this.content.set('focus', false);
+    	this.$().animate({
+    	    backgroundColor: "#ffffff"
+    	}, 75 );	
     },
     click: function(e,v) {
-	this.content.select();
+    	this.content.select();
     }
-})
+});
 
 App.selectedNode = null;
 App.node = Em.Object.extend({
