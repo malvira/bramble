@@ -183,6 +183,9 @@ App.selectedNode = null;
 App.node = Em.Object.extend({
     eui: null,
     addr: null,
+    coapURL: function() {
+	return "coap://[" + this.get('addr') + "]";
+    }.property('addr'),
     selected: false,
     focus: false,
     select: function() {

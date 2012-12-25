@@ -28,9 +28,12 @@ ${nav.bar()}
 
     <div id="details" class="six columns">
       <script type="text/x-handlebars" data-template-name="node-details">
+	{{#if App.selectedNode}}
 	{{#view App.selectedNodeView}}
 	<h3>{{view.node.eui}}</h3>
+	<a {{bindAttr href="view.node.coapURL"}}>coap://[{{view.node.addr}}]</a>
 	{{/view}}
+	{{/if}}
       </script>
     </div>
 
