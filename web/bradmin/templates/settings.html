@@ -12,9 +12,9 @@ Border Router Settings
 ${nav.bar()}
 <hr>
 
-<div class="container">
+<div class="container" id="changePass">
 
-<script type="text/x-handlebars">
+<script type="text/x-handlebars" data-template-name="passwordView">
 
 <div class="eight columns offset-by-four">
   <h3 class="cjust">Change password</h3>
@@ -38,7 +38,8 @@ ${nav.bar()}
 	   {{bindAttr disabled="App.password.bad"}}
 	   {{action "changepass" target="App.password"}} >
   </div>
-  
+
+
   <div class="two columns omega">
     <img src="static/images/ajax-loader.gif" class="spinner" 
 	 {{bindAttr class="App.password.ChangeWait:visible"}}>
@@ -55,17 +56,13 @@ ${nav.bar()}
     {{/view}}
     {{/if}}
   </div>
-
-</div>
-
 </script>
-
-
+</div>
 
 <hr>
 
-<script type="text/x-handlebars">
-<div class="container">
+<div class="container" id="lowpanAPI">
+<script type="text/x-handlebars" data-template-name="lowpanAPI">
 
   <div class="sixteen columns">
     <h3 class="cjust">Lowpan API</h3>
@@ -105,25 +102,5 @@ ${nav.bar()}
     {{/if}}
 
   </div>
-  
-
-</div>
-
 </script>
-
-<br class="clear"/>
-
-<h3>IPv6 Configuration</h3>
-
-<p> select method for ipv6 connectivity here
-
-<ul>
-  <li>Lowpan tunnel
-  <li>Gogo Freenet tunnel
-  <li>auto6to4
-  <li>radvd/native
-</ul>
-
-<hr>
-
-
+</div>

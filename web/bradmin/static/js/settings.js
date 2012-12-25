@@ -5,6 +5,10 @@ var App = Em.Application.create({
 });
 
 App.init = function() {    
+
+    App.changePassView.appendTo("#changePass");
+    App.lowpanAPIView.appendTo("#lowpanAPI");
+
     $.ajax({
 	url: "settings/lowpan",  
 	type: "GET",  
@@ -17,6 +21,13 @@ App.init = function() {
 	}
     });  
 }
+
+App.changePassView = Ember.View.create({
+    templateName: "passwordView"
+});
+App.lowpanAPIView = Ember.View.create({
+    templateName: "lowpanAPI"
+});
 
 App.password = Ember.Object.create({
     ChangeWait: false,
