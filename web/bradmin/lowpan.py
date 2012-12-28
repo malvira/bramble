@@ -67,6 +67,7 @@ def syncConfig():
             pass
 
     if gogotmpl is None:
+        print "couldn't open gogoc template"
         return
 
     # generate a tunnel password
@@ -97,4 +98,5 @@ def syncConfig():
     out = open(lowpanConf['gogo-conf'] + '/gogoc.conf', 'w')
     out.write(gogo)
 
-    os.system('/etc/init.d/gogoc restart')
+    os.system('/etc/init.d/gogoc stop && gogoc -n > %s &' % (os.path.join(app.config['CACHE_ROOT'],'gogoc.log')))
+

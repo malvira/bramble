@@ -54,12 +54,12 @@ def load_radio():
         print "Using fallback address %s/64" % (tunslip['address'])
         os.system("tunslip6 -v3 -s %s %s > %s &" % (tunslip['device'], tunslip['address'], os.path.join(app.config['CACHE_ROOT'],'tunslip6.log')))
     else:
-        print "Using tunnel address %s/64" % (ipv6)
         ipv6 = subprocess.check_output(["getbripv6.sh"]).rstrip();
+        print "Using tunnel address %s/64" % (ipv6)
         time.sleep(1)
         os.system("tunslip6 -v3 -s %s %s > %s &" % (tunslip['device'], ipv6 + '/64', os.path.join(app.config['CACHE_ROOT'],'tunslip6.log')))
     
-    os.system("for i in /proc/sys/net/ipv6/conf/*; do cat $i/forwarding; done")
+    os.system("for i in /proc/sys/net/ipv6/conf/*; do echo 1 > $i/forwarding; done")
 
 @app.route("/radio", methods=['GET', 'POST'])
 @login_required
