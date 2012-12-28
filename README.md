@@ -20,6 +20,16 @@ cp examples/coap-client /usr/local/bin
 
 compatibility after this version is broken
 
+Running on BR12
+===============
+
+- how does hostname work? Currently they come up as alarm
+
+- root password is root (how is this going to work?)
+
+- serial console is disabled by default. TODO: make the prog12 set
+  that mux 
+
 Everthing under this is old
 ===========================
 
