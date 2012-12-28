@@ -34,7 +34,10 @@ def init():
         db.store('conf/lowpan', json.dumps(lowpanConf, sort_keys=True, indent=4))
 
     if (lowpanConf['url'] != None) and (lowpanConf['password'] != None):
-        syncConfig()
+        try:
+            syncConfig()
+        except urllib2.HTTPError:
+            print "Couldn't connect to lowpan"
 
 def syncConfig():
     """ get BR information from Lowpan """
