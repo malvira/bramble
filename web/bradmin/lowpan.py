@@ -98,5 +98,5 @@ def syncConfig():
     out = open(lowpanConf['gogo-conf'] + '/gogoc.conf', 'w')
     out.write(gogo)
 
-    os.system('/etc/init.d/gogoc stop && gogoc -n > %s &' % (os.path.join(app.config['CACHE_ROOT'],'gogoc.log')))
+    os.system('killall -9 gogoc && gogoc -n > %s &' % (os.path.join(app.config['CACHE_ROOT'],'gogoc.log')))
 
