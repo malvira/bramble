@@ -75,8 +75,12 @@ def syncConfig():
     length = 24
     tunpassword = ''.join(choice(chars) for _ in range(length))
     m = md5.new()
-    m.update(brConf['device']['eui'])
-    m.update(':' + lowpanConf['realm'] + ':') 
+    try:
+        m.update(brConf['device']['eui'])
+        m.update(':' + lowpanConf['realm'] + ':') 
+    except KeyError:
+        print "invalid config"
+        return
     m.update(tunpassword)
     tunpasshash = m.hexdigest()
 
