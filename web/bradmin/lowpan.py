@@ -43,12 +43,17 @@ def syncConfig():
     """ get BR information from Lowpan """
     lowpanConf = json.loads(db.get('conf/lowpan'))
 
-    response = urllib2.urlopen( lowpanConf['url'] + '?apikey=' + lowpanConf['password'] )
-    brConf = json.loads(response.read())
+    try:
+        response = urllib2.urlopen( lowpanConf['url'] + '?apikey=' + lowpanConf['password'] )
+        brConf = json.loads(response.read())
+    except:
+        print "couldn't connect to lowpan"
+        return
+
     db.store('conf/br', json.dumps(brConf, sort_keys=True, indent=4))
+    
 
     # create gogoc.conf
-
     distro = 'arch'
     try:
        with open('/etc/apt/sources.list') as f: 
