@@ -38,6 +38,7 @@ def load_radio():
     radio = json.loads(db.get('conf/radio'))
     tunslip = json.loads(db.get('conf/tunslip'))
 
+    subprocess.call(['uartsel', 'mc'])
     subprocess.call(['mc1322x-load', '-e', '-r', 'none', '-f', os.path.join(app.config['CACHE_ROOT'],'br.bin'), '-t', tunslip['device'], '-c', radio['resetcmd']])
 
     devnull = open('/dev/null', 'w')
