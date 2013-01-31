@@ -1,0 +1,17 @@
+.node {
+    stroke: black;
+    fill: white;
+}
+.link.preferred {
+    stroke: black;
+    stroke-width: 4;
+}
+
+.link.normal {
+    stroke: gray;
+    stroke-width: 2;
+}
+
+.selected {
+    border: solid red 2px;
+}

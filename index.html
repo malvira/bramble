@@ -1,53 +1,92 @@
-<!doctype html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>Bradmin by malvira</title>
+<!DOCTYPE html>
+<!--[if lt IE 7 ]><html class="ie ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]><html class="ie ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!--><html lang="en"> <!--<![endif]-->
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-  </head>
+  <title><%block name="title"/></title>
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+  <link rel="stylesheet" href="static/stylesheets/base.css">
+  <link rel="stylesheet" href="static/stylesheets/skeleton.css">
+  <link rel="stylesheet" href="static/stylesheets/layout.css">
+
+  <link rel="stylesheet" href="static/stylesheets/bradmin.css">
+
+  <link rel="shortcut icon" href="static/images/favicon.ico">
+  <link rel="apple-touch-icon" href="static/images/apple-touch-icon.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="static/images/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="static/images/apple-touch-icon-114x114.png">
+
+
+  <!--[if lt IE 9]>
+  <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+
+
+  <script src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
+  <script src="http://code.jquery.com/color/jquery.color-2.1.0.js"></script>
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.3.3/underscore-min.js"></script>
+
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/handlebars.js/1.0.rc.1/handlebars.min.js"></script>
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/ember.js/1.0.0-pre.2/ember-1.0.0-pre.2.min.js"></script>
+
+</head>
+
   <body>
-    <div class="wrapper">
-      <header>
-        <h1>Bradmin</h1>
-        <p>BRadmin: 6LowPAN border-router administration system</p>
 
-        <p class="view"><a href="https://github.com/malvira/bradmin">View the Project on GitHub <small>malvira/bradmin</small></a></p>
+    
+    <link rel="stylesheet" href="static/stylesheets/mesh.css">
+    
+    <div class="container">
+      <div id="mesh" class="ten columns"></div>
+      <div id="nodes" class="six columns clearfix">
+	
+	
+	<div id="list" class="six columns" style="overflow: auto">
+	  <script type="text/x-handlebars" data-template-name="node-list">
+	    {{#view}}
+	    {{each App.nodes itemViewClass="App.nodeItemView"}}
+	    {{/view}}
+	  </script>
+	</div>
+	
+	<div id="details" class="six columns">
+	  <script type="text/x-handlebars" data-template-name="node-details">
+	    {{#if App.selectedNode}}
+	    {{#view App.selectedNodeView}}
+	    <h3>{{view.node.eui}}</h3>
+	    <a {{bindAttr href="view.node.coapURL"}}>coap://[{{view.node.addr}}]</a>
+	    {{/view}}
+	    {{/if}}
+	  </script>
+	</div>
+	
+      </div>
+      
+      
+      <script src="http://cdnjs.cloudflare.com/ajax/libs/d3/3.0.1/d3.v3.min.js"></script>
 
-
-        <ul>
-          <li><a href="https://github.com/malvira/bradmin/zipball/master">Download <strong>ZIP File</strong></a></li>
-          <li><a href="https://github.com/malvira/bradmin/tarball/master">Download <strong>TAR Ball</strong></a></li>
-          <li><a href="https://github.com/malvira/bradmin">View On <strong>GitHub</strong></a></li>
-        </ul>
-      </header>
-      <section>
-        <h3>Manage your Mesh</h3>
-
-<p>details "soon"</p>
-      </section>
-      <footer>
-        <p>This project is maintained by <a href="https://github.com/malvira">malvira</a></p>
-        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
-      </footer>
-    </div>
-    <script src="javascripts/scale.fix.js"></script>
-              <script type="text/javascript">
-            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-          </script>
-          <script type="text/javascript">
-            try {
-              var pageTracker = _gat._getTracker("UA-38125184-1");
-            pageTracker._trackPageview();
-            } catch(err) {}
-          </script>
+      <script src="static/js/mesh.js"></script>      
+      <script src="static/js/meshapp.js"></script>
 
   </body>
+
+  <script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+  </script>
+  <script type="text/javascript">
+    try {
+    var pageTracker = _gat._getTracker("UA-38125184-1");
+    pageTracker._trackPageview();
+    } catch(err) {}
+  </script>
 </html>
