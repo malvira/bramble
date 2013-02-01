@@ -46,37 +46,16 @@
     <link rel="stylesheet" href="static/stylesheets/mesh.css">
     
     <div class="container">
-      <div id="mesh" class="ten columns"></div>
-      <div id="nodes" class="six columns clearfix">
-	
-	
-	<div id="list" class="six columns" style="overflow: auto">
-	  <script type="text/x-handlebars" data-template-name="node-list">
-	    {{#view}}
-	    {{each App.nodes itemViewClass="App.nodeItemView"}}
-	    {{/view}}
-	  </script>
-	</div>
-	
-	<div id="details" class="six columns">
-	  <script type="text/x-handlebars" data-template-name="node-details">
-	    {{#if App.selectedNode}}
-	    {{#view App.selectedNodeView}}
-	    <h3>{{view.node.eui}}</h3>
-	    <a {{bindAttr href="view.node.coapURL"}}>coap://[{{view.node.addr}}]</a>
-	    {{/view}}
-	    {{/if}}
-	  </script>
-	</div>
-	
-      </div>
-      
-      
-      <script src="http://cdnjs.cloudflare.com/ajax/libs/d3/3.0.1/d3.v3.min.js"></script>
-
-      <script src="static/js/mesh.js"></script>      
-      <script src="static/js/meshapp.js"></script>
-
+			<div class="three columns"> &nbsp; </div>
+      <div id="mesh" class="mesh ten columns"></div>
+    </div>
+    
+    
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/d3/3.0.1/d3.v3.min.js"></script>
+		
+    <script src="static/js/mesh.js"></script>      
+    <script src="static/js/meshapp.js"></script>
+		
   </body>
 
   <script type="text/javascript">

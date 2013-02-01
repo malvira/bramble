@@ -61,11 +61,6 @@ window.addEdge = function(edge) {
 };
 
 function resize() {
-    window.force.size([$("#mesh").width(), $(window).height()]);
-    var navh = $("#nav").height();
-    $("#mesh").height($(window).height() - navh - 75);
-    $("#nodes").height($(window).height() - navh - 75 );
-    $("#list").height(($(window).height() - navh) * .5);
 };
 
 $().ready(function() {
@@ -146,7 +141,9 @@ var force;
 
 (function() {
 
-    $("#mesh").height($(window).height());
+		var h = $(window).height() * .5;
+
+    $("#mesh").height(h);
 
     svg = d3.select("#mesh").append("svg");
     svg.append("defs").append("marker")
@@ -166,7 +163,7 @@ var force;
 	.linkDistance(function(d) { if (d.etx > 1 ) { return d.etx * 100; } else { return 75; }})
 	.charge(-100)
 	.gravity(0.01)
-	.size([$("#mesh").width(), $(window).height()]);
+	.size([$("#mesh").width(), h]);
 
     nodes = force.nodes();
     links  = force.links();

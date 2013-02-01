@@ -1,3 +1,8 @@
+.mesh {		
+		border: gray 1px solid;
+		border-radius: 15px;
+		margin-top: 15%;
+}
 .node {
     stroke: black;
     fill: white;
