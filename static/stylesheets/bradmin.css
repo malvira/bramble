@@ -1,3 +1,55 @@
+body, input, select, textarea, button,
+h1, h2, h3, h4, h5, h6,
+text  {
+    font-family: Helvetica,arial,freesans,clean,sans-serif;
+}
+
+h2 {
+    margin-top: 3ex;
+}
+
+button {
+    font-size: 5ex;
+    background: #4df; /* Old browsers */
+    background: #4df -moz-linear-gradient(top, rgba(255,255,255,.2) 0%, rgba(0,0,0,.2) 100%); /* FF3.6+ */
+    background: #4df -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,.2)), color-stop(100%,rgba(0,0,0,.2))); /* Chrome,Safari4+ */
+    background: #4df -webkit-linear-gradient(top, rgba(255,255,255,.2) 0%,rgba(0,0,0,.2) 100%); /* Chrome10+,Safari5.1+ */
+    background: #4df -o-linear-gradient(top, rgba(255,255,255,.2) 0%,rgba(0,0,0,.2) 100%); /* Opera11.10+ */
+    background: #4df -ms-linear-gradient(top, rgba(255,255,255,.2) 0%,rgba(0,0,0,.2) 100%); /* IE10+ */
+    background: #4df linear-gradient(top, rgba(255,255,255,.2) 0%,rgba(0,0,0,.2) 100%); /* W3C */
+
+    border: 1px solid #399;
+    border-top: 1px solid #ade;
+    border-left: 1px solid #ade;
+
+    color: gray;
+    
+}
+
+em.firstword { font-size: 21px; line-height: 30px; margin-bottom: 4px; font-style: normal; font-weight: bold;}
+em.bradmin { font-style: normal; font-weight: bold; }
+
+.hr {
+    height: 1ex;
+    margin-bottom: 5%;
+    margin-top: 5%;
+}
+
+.tagline {
+    text-align: center;
+    color: gray;
+    margin-bottom: 5%;
+}
+
+#splashtitle {
+	font-size: 7ex;
+	font-weight: bold;
+}
+
+.copyright {
+    color: #aaa;
+}
+
 /* no hover on disabled buttons */
 input[disabled] {
     background:#ccc;
@@ -6,7 +58,7 @@ input[disabled] {
     color: #aaa;
 }
 
-input,input[disabled]:hover { 
+input,input[disabled]:hover {
 		background: #eee; /* Old browsers */
 		background: #eee -moz-linear-gradient(top, rgba(255,255,255,.2) 0%, rgba(0,0,0,.2) 100%); /* FF3.6+ */
 		background: #eee -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,.2)), color-stop(100%,rgba(0,0,0,.2))); /* Chrome,Safari4+ */

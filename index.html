@@ -19,6 +19,7 @@
   <link rel="stylesheet" href="static/stylesheets/layout.css">
 
   <link rel="stylesheet" href="static/stylesheets/bradmin.css">
+  <link rel="stylesheet" href="static/stylesheets/buttons.css">
 
   <link rel="shortcut icon" href="static/images/favicon.ico">
   <link rel="apple-touch-icon" href="static/images/apple-touch-icon.png">
@@ -46,26 +47,145 @@
     <link rel="stylesheet" href="static/stylesheets/mesh.css">
     
     <div class="container">
-			<div class="three columns"> &nbsp; </div>
+      <div class="three columns"> &nbsp; </div>
       <div id="mesh" class="mesh ten columns"></div>
-    </div>
-    
-    
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/d3/3.0.1/d3.v3.min.js"></script>
-		
-    <script src="static/js/mesh.js"></script>      
-    <script src="static/js/meshapp.js"></script>
-		
-  </body>
+      <br class="clear">
 
-  <script type="text/javascript">
-    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-  </script>
-  <script type="text/javascript">
-    try {
-    var pageTracker = _gat._getTracker("UA-38125184-1");
-    pageTracker._trackPageview();
-    } catch(err) {}
-  </script>
+      <div class="tagline four columns offset-by-six">Manage your mesh</div>
+      <br class="clear">
+      <img class="twelve columns hr offset-by-two" src="static/svg/hr.svg"/>
+
+    </div>
+
+    <div class="container">
+
+      <div class="six columns offset-by-one">
+	<p> <em class="firstword">BRadmin</em> is web-based administration system for
+	6LoWPAN border-routers. BRadmin strives to be an easy to use
+	automatic 6LoWPAN router as well as provide tools for
+	commissioning and diagnostics for your 6LoWPAN deployments
+      </div>
+
+      <div class="six columns offset-by-two cjust">
+	<br><br>
+	<a href="https://github.com/malvira/bradmin"class="button blue">Get the Code</a>
+      </div>
+
+      <img class="twelve columns hr offset-by-two" src="static/svg/hr.svg"/>
+
+
+    <div class="six columns offset-by-one">
+      <p> <em class="firstword">What is a BR?</em> A BR is router that connects one
+	network to your 6LoWPAN network. Internet traffic is routed to
+	and from the 6LoWPAN network to the rest of the interface
+	automatically by the BR. 
+	
+      <p> BRs can connect a variety of physical network types to a
+	6LoWPAN network. Commonly used networks are:
+	
+	<ul class="circle">
+	  <li> Ethernet
+	  <li> WiFi
+	  <li> Cellular
+	</ul>
+
+	<p> For <em class="bradmin">BRadmin</em>, this router is
+	usually something running Linux with an 802.15.4 radio.
+
+      </div>
+      <div class="eight columns cjust">
+	<img width="100%" src="static/svg/br.svg"/>
+      </div>
+
+      <img class="twelve columns hr offset-by-two" src="static/svg/hr.svg"/>
+
+      <div class="six columns offset-by-one">
+	<h1> Features</h1>
+      </div>
+      <br class="clear">
+      
+      <div class="six columns offset-by-one">
+	<h2> RPL Status </h2>
+
+	Live reporting and interrogation of the routing (RPL) in your
+	6LoWPAN network.
+      </div>
+
+      <div class="six columns offset-by-two">
+	<h2>IPv6 Setup</h2>
+	
+	<em class="bradmin">BRAdmin</em> makes it easy to get a
+	globally routeable subnet in a variety of network
+	environments: <em>even from IPv4 networks behind NATs</em>.
+
+	Setup methods include:
+	<ul class="square">
+	  <li> TSP
+	    <ul class="circle">
+	      <li> Lowpan.com
+	      <li> Gogo6
+	    </ul>
+	  <li> <em>More on the way...</em>
+	    <ul class="circle">
+	      <li> IPv6 autoconfiguration
+	      <li> 6in4
+	      <li> NAT64
+	    </ul>
+	</ul>
+      </div>
+      
+      <div class="six columns offset-by-one">
+	<h2>Cloud Services Uplinks</h2>
+	
+	<em class="bradmin">BRadmin</em> can help <em>"glue"</em> the
+	software running on your low power wireless network to various
+	Cloud Service.
+      </div>
+
+      <div class="six columns offset-by-two">
+	<h2>Free and Open Source</h2>
+	
+	<em class="bradmin">BRadmin</em> is community developed and released under the GPLv3.
+
+	You can find us on <a href="https://github.com/malvira/bradmin">Github</a>.
+
+	Visit
+	the <a href="https://github.com/malvira/bradmin/wiki">wiki</a>
+	for more information about how to use or help develop BRadmin.
+
+      </div>
+
+    </div>
+
+    <hr>
+
+    <div class="container">
+
+      <div class="sixteen colums cjust copyright">
+	© 2013 Lowpan, Inc. Distributed under the GNU FDL v1.3
+      </div>
+
+    </div>
+
+
+</div>
+
+
+<script src="http://cdnjs.cloudflare.com/ajax/libs/d3/3.0.1/d3.v3.min.js"></script>
+
+<script src="static/js/mesh.js"></script>      
+<script src="static/js/meshapp.js"></script>
+
+</body>
+
+<script type="text/javascript">
+  var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+  document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+  try {
+  var pageTracker = _gat._getTracker("UA-38125184-1");
+  pageTracker._trackPageview();
+  } catch(err) {}
+</script>
 </html>

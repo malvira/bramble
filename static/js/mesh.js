@@ -61,6 +61,14 @@ window.addEdge = function(edge) {
 };
 
 function resize() {
+    var meshh = $("#mesh").height();
+    var meshw = $("#mesh").width();
+
+    // older firefoxes can't get width and height :(
+    var sh = $("#splashtitle").height();
+    var sw = $("#splashtitle").width();
+
+    $("#splashtitle").attr("x",meshw/2).attr("y",meshh/2);
 };
 
 $().ready(function() {
@@ -121,7 +129,7 @@ function updateMesh() {
      	.attr("r", 10)
         .style("opacity", 1e-6)
 	.transition()
-	 .duration(500)
+	.duration(500)
 	.style("opacity", 1);
 
     node.call(force.drag);
@@ -141,7 +149,7 @@ var force;
 
 (function() {
 
-		var h = $(window).height() * .5;
+    var h = $(window).height() * .33;
 
     $("#mesh").height(h);
 
@@ -157,6 +165,11 @@ var force;
     svg.append("g").attr("id","links");
     svg.append("g").attr("id","nodes");
 
+    svg.append("text").text("BRadmin").attr("id", "splashtitle")
+	.style("opacity", 1e-6)
+	.transition().duration(2000)
+	.style("opacity", 1);
+    
     window.mesh = svg;
 
     force = d3.layout.force()
