@@ -169,7 +169,7 @@ var force;
     svg.append("g").attr("id","links");
     svg.append("g").attr("id","nodes");
 
-    svg.append("text").text("BRadmin").attr("id", "splashtitle")
+    svg.append("text").text("BRamble").attr("id", "splashtitle")
 	.style("opacity", 1e-6)
 	.transition().duration(2000)
 	.style("opacity", 1);
