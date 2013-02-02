@@ -8,6 +8,12 @@ h2 {
     margin-top: 3ex;
 }
 
+/* #Links
+================================================== */
+	a, a:visited { color: #09f; text-decoration: underline; outline: 0; }
+	a:hover, a:focus { color: #05a; }
+	p a, p a:visited { line-height: inherit; }
+
 button {
     font-size: 5ex;
     background: #4df; /* Old browsers */
