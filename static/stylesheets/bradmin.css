@@ -30,9 +30,8 @@ em.firstword { font-size: 21px; line-height: 30px; margin-bottom: 4px; font-styl
 em.bradmin { font-style: normal; font-weight: bold; }
 
 .hr {
-    height: 1ex;
-    margin-bottom: 5%;
-    margin-top: 5%;
+    margin-bottom: 2%;
+    margin-top: 2%;
 }
 
 .tagline {
