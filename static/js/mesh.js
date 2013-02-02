@@ -61,14 +61,18 @@ window.addEdge = function(edge) {
 };
 
 function resize() {
-    var meshh = $("#mesh").height();
-    var meshw = $("#mesh").width();
+    var mh = $("#mesh").height();
+    var mw = $("#mesh").width();
 
-    // older firefoxes can't get width and height :(
+    // older firefoxes can compute this :(
     var sh = $("#splashtitle").height();
     var sw = $("#splashtitle").width();
 
-    $("#splashtitle").attr("x",meshw/2).attr("y",meshh/2);
+    // fake up a percent margin on the text    
+    var mar = mw * .05
+    
+    $("#splashtitle").attr("x", mar).attr("y",mh/2);
+ 
 };
 
 $().ready(function() {
