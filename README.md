@@ -83,5 +83,5 @@ This will print initalization information to the screen while the
 border-router is loaded with firmware, tunslip is connected, and
 `gogoc` aquires a tunnel. It will also start the BRamble webserver.
 
-If all goes well, point your browser to localhost.
-
+If all goes well, point your browser to localhost the default password
+is default.
