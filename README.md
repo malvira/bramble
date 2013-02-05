@@ -1,12 +1,56 @@
+BRamble
+=======
+
+BRamble is a web-based administration system for 6LoWPAN
+border-routers. It provides setup and diagnostic tools to easily
+deploy 6LoWPAN networks.
+
+Features
+========
+
+* RPL network visualization
+  * queries routing information from nodes implmenting [rplinfo](https://github.com/malvira/rplinfo) CoAP resources
+
+* Automatic IPv6 network configuration
+  * bridge configuration via tunslip6 and [erbr](https://github.com/malvira/erbr)
+  * global tunnel configuration via [TSP](http://tools.ietf.org/html/rfc5572)
+    * [Lowpan.com](https://www.lowpan.com/)
+    * [Freenet6 (Gogo6)](http://www.gogo6.com/freenet6)
+
+* Radio managment
+  * automatic firmware loading
+
+
+Getting Help and Contibuting
+============================
+
+Please see the [wiki](https://github.com/malvira/bramble/wiki) for
+detailed development details. If you need help, please ask questions
+in the [issue tracker](https://github.com/malvira/bramble/issues). 
+
 Installation
 ============
 
-Stuff...
+Get BRamble
+-----------
 
-Install libcoap and coap-client
--------------------------------
+```
+git clone https://github.com/malvira/bramble.git
+```
 
-Get the latest version of libcoap that works with erbium:
+### Install dependencies
+
+#### Flask
+Bramble uses the [Flask](http://flask.pocoo.org/) micro-framework for
+[Python](http://www.python.org/).
+
+#### Install libcoap and coap-client
+
+BRabmle currently uses coap-client from [libcoap](http://libcoap.sourceforge.net/).
+
+Currently mainline contiki implements coap-08 in erbium (used by
+`erbr` and `rplinfo`). To get the latest version of libcoap that works
+with with this version of erbium:
 
 ```
 git clone git://libcoap.git.sourceforge.net/gitroot/libcoap/libcoap
@@ -18,81 +62,25 @@ make
 cp examples/coap-client /usr/local/bin
 ```
 
-compatibility after this version is broken
+#### Contiki stuff
 
-Running on BR12
+You should just need tunslip6 in a executable place. 
+
+#### Distribution files
+
+See the files directory for details on how to configure your
+particular distribution.
+
+Running Bramble
 ===============
 
-- how does hostname work? Currently they come up as alarm
+```
+cd bramble/web
+python runserver.py
+```
 
-- root password is root (how is this going to work?)
+This will print initalization information to the screen while the
+border-router is loaded with firmware, tunslip is connected, and
+`gogoc` aquires a tunnel. It will also start the BRamble webserver.
 
-- serial console is disabled by default. TODO: make the prog12 set
-  that mux 
-
-Everthing under this is old
-===========================
-
-code to run on border-routers
-
-How to use:
------------
-
-Use new-device to get a new eui for a BR12. 
-
-In the web.git, run python passwords to generate a device password.
-
- python passwords.py 
-{"password": "IP7w6o5CfU7qGIf6NAKKmbli", "bcrypt": "$2a$12$NzXEXmiHgvfI1Xy0bpXdSu9q0dt/WL8PLiEJsANTMzhj8O/qFO/GW"}
-
-Put the bcrypt into the database and put the password into lowpan.json
-
-$2a$12$NzXEXmiHgvfI1Xy0bpXdSu9q0dt/WL8PLiEJsANTMzhj8O/qFO/GW
-
-database:
- "passwords": {"login": "$2a$12$NzXEXmiHgvfI1Xy0bpXdSu9q0dt/WL8PLiEJsANTMzhj8O/qFO/GW"}
-
-lowpan.json:
-{
-    "url" : "http://couch-0-ord.devl.org:5000", 
-    "eui" : "ec473cbb12000003",
-    "password" : "IP7w6o5CfU7qGIf6NAKKmbli",
-    "realm" : "lowpan",
-    "gogo-conf": "/etc/gogoc"
-}
-
-run lowpan-tunnel, this will get a tsps password and allocate a
-tunnel. It will write a /etc/gogoc.conf with this info.
-
-Getting a tunnel:
------------------
-
-NOTE securing the passwords/credentials: not sure how to do
-this. Can I store the private key on the server and then issue
-certificates or something? Short answer is no, a determined person
-will get the keys/passwords. But I think that's ok. If you own the
-password you own the license. That's my policy. I just have to make it
-hard for people to steal passwords from other people.
-
-eui and password are used to get the tunnel endpoint from the web api
-gogoc is configured to use that tunnel endpoint (using mac and tunnel password)
-tsp send pass with digst-md5. This will be sent a lot so we'll use a
-different password.
-
-tsps looks up the allocated subnet for the border-router and passes it along.
-
-lowpan-tunnel needs to generate a password and the passhash and send
-the passhash to the server.
-
-Directory Structure:
---------------------
-
-web/
-   flask border-router webpage
-files/
-   files for various systems, mirrors their directory structure
-   arch/
-      files for arch/arm
-   debian/
-      files for debian/ubuntu desktops acting as border-routers
-      (useful for development)
+If all goes well, point your browser to [localhost](localhost)
