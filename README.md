@@ -95,3 +95,8 @@ border-router is loaded with firmware, tunslip is connected, and
 
 If all goes well, point your browser to localhost the default password
 is default.
+
+License
+=======
+
+BRamble is released under [GPLv3](http://www.gnu.org/licenses/gpl-3.0.txt).
