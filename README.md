@@ -50,9 +50,21 @@ git clone https://github.com/malvira/bramble.git
 
 ### Install dependencies
 
-#### Flask
-Bramble uses the [Flask](http://flask.pocoo.org/) micro-framework for
-[Python](http://www.python.org/).
+On a debian/ubuntu machine, the following should get you pretty close:
+
+```
+apt-get update 
+apt-get install cython libjs-jquery python-flask python-pip python-dev ipv6calc
+pip install Flask-OpenID Flask-Login Flask-Principal Flask-Bcrypt Flask-Mako
+```
+
+See also the advanced scripts in:
+
+  [bramble/files/debian/install-debian.sh](https://github.com/malvira/bramble/blob/master/files/arch/install-arch.sh)
+  [bramble/files/arch/install-arch.sh](https://github.com/malvira/bramble/blob/master/files/debian/install-debian.sh)
+
+These scripts will setup nginx and automatically start BRamble
+etc... **READ THROUGH THEM BEFORE RUNNING ON YOUR SYSTEM** 
 
 #### Install libcoap and coap-client
 
