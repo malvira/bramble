@@ -55,7 +55,7 @@ On a debian/ubuntu machine, the following should get you pretty close:
 ```
 apt-get update 
 apt-get install cython libjs-jquery python-flask python-pip python-dev ipv6calc
-pip install Flask-OpenID Flask-Login Flask-Principal Flask-Bcrypt Flask-Mako
+pip install Flask-OpenID Flask-Login Flask-Principal Flask-Bcrypt Flask-Mako IPy
 ```
 
 See also the advanced scripts in:
@@ -65,6 +65,15 @@ See also the advanced scripts in:
 
 These scripts will setup nginx and automatically start BRamble
 etc... **READ THROUGH THEM BEFORE RUNNING ON YOUR SYSTEM** 
+
+#### Install gevent from source
+
+```
+git clone https://github.com/SiteSupport/gevent.git
+cd gevent
+python setup.py build
+python setup.py install
+```
 
 #### Install libcoap and coap-client
 
