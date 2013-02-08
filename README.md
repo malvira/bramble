@@ -93,6 +93,23 @@ make
 cp examples/coap-client /usr/local/bin
 ```
 
+#### Econotag tools
+
+If you are using econotags or mc13224vs with bramble you will need
+mc1322x-load (the C version and not the perl script):
+
+```
+/contiki/cpu/mc1322x/tools$ gcc mc1322x-load.c -o mc1322x-load
+sudo cp mc1322x-load /usr/local/bin
+```
+
+and probably `bbmc` (esp. if you are using PC w/econotag):
+
+```
+/contiki/cpu/mc1322x/tools/ftditools$ make
+sudo cp bbmc /usr/local/bin
+```
+
 #### Contiki stuff
 
 You should just need tunslip6 in a executable place. 
