@@ -106,6 +106,7 @@ sudo cp mc1322x-load /usr/local/bin
 and probably `bbmc` (esp. if you are using PC w/econotag):
 
 ```
+sudo apt-get install libftdi-dev
 /contiki/cpu/mc1322x/tools/ftditools$ make
 sudo cp bbmc /usr/local/bin
 ```
