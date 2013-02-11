@@ -5,8 +5,6 @@ from flask.ext.login import login_required
 from flask.ext.mako import MakoTemplates
 from flask.ext.mako import render_template as render_mako
 
-from sqlalchemy.orm.exc import NoResultFound
-
 from bradmin import app
 from bradmin.push import rplData
 
