@@ -120,6 +120,24 @@ You should just need tunslip6 in a executable place.
 See the files directory for details on how to configure your
 particular distribution.
 
+In particular,
+
+##### Gogoc template
+
+_only necessary if you are using a TSP tunnel_
+
+A suitable gogoc template must be present in the BRamble search path
+(default: `['/etc/gogoc', '/var/cache/bradmin',
+'/etc/lowpan', '/usr/local/etc/lowpan', '.']`
+
+##### getbripv6.sh
+
+This script needs to be in your path somewhere. E.g.:
+
+```
+cp ./files/debian/bin/getbripv6.sh /usr/local/bin
+```
+
 Running Bramble
 ===============
 
