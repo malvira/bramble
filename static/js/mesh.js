@@ -68,11 +68,11 @@ function resize() {
     var sh = $("#splashtitle").height();
     var sw = $("#splashtitle").width();
 
-    // fake up a percent margin on the text    
+    // fake up a percent margin on the text
     var mar = mw * .05
-    
+
     $("#splashtitle").attr("x", mar).attr("y",mh/2);
- 
+
 };
 
 $().ready(function() {
@@ -88,17 +88,19 @@ function nodeClick(eui) {
     node.select();
 }
 
+var radius = 10;
+
 function updateMesh() {
 
     var link = svg.select("#links").selectAll(".link")
-	.data(links, function(l) { 
+	.data(links, function(l) {
 	    return l.source.eui + "->" + l.target.eui;
 	} );
 
     link.enter()
 	.append("line")
 	.attr("class", "link normal")
-        .style("opacity", 1e-6)
+	.style("opacity", 1e-6)
 	.transition()
 	 .duration(500)
 	.style("opacity", 1);
@@ -115,7 +117,7 @@ function updateMesh() {
 	} else {
 	    return "url(#normarrow)";
 	}});
-   
+
     link.exit()
 	.transition()
 	.duration(300)
@@ -130,8 +132,8 @@ function updateMesh() {
      	.attr("onclick", function(d) { return "nodeClick('" + d.eui + "')"})
      	.attr("class", "node")
      	.attr("id", function(d) { return "eui" + d.eui; })
-     	.attr("r", 10)
-        .style("opacity", 1e-6)
+     	.attr("r", radius)
+	.style("opacity", 1e-6)
 	.transition()
 	.duration(500)
 	.style("opacity", 1);
@@ -157,7 +159,11 @@ var force;
 
     $("#mesh").height(h);
 
-    svg = d3.select("#mesh").append("svg");
+    var w  = $("#mesh").width()
+
+    svg = d3.select("#mesh").append("svg")
+	.attr('width', w)
+	.attr('height', h);
     svg.append("defs").append("marker")
 	.attr("id", "prefarrow").attr("orient", "auto").attr("viewBox","0 0 20 20")
 	.attr("refX", "35").attr("refY", "10")
@@ -173,14 +179,14 @@ var force;
 	.style("opacity", 1e-6)
 	.transition().duration(2000)
 	.style("opacity", 1);
-    
+
     window.mesh = svg;
 
     force = d3.layout.force()
 	.linkDistance(function(d) { if (d.etx > 1 ) { return d.etx * 100; } else { return 75; }})
 	.charge(-100)
 	.gravity(0.01)
-	.size([$("#mesh").width(), h]);
+	.size([w *= 2 / 3, h *= 2 / 3]);
 
     nodes = force.nodes();
     links  = force.links();
@@ -197,6 +203,5 @@ var force;
     });
 
     updateMesh();
- 
-})(); 
 
+})();
