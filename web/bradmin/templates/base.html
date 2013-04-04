@@ -13,11 +13,10 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-
   <link rel="stylesheet" href="static/stylesheets/base.css">
   <link rel="stylesheet" href="static/stylesheets/skeleton.css">
   <link rel="stylesheet" href="static/stylesheets/layout.css">
-  <link rel="stylesheet" href="//cdn.jsdelivr.net/qtip2/2.0.0/jquery.qtip.css">
+  <link rel="stylesheet" href="static/stylesheets/jquery.qtip.css">
 
   <link rel="stylesheet" href="static/stylesheets/bradmin.css">
 
@@ -34,18 +33,11 @@
   <%block name="head" />
 
   <script src="static/js/jquery-1.7.2.js"></script>
-  <script src="static/js/jquery-ui-1.8.23.custom.min.js"></script>
-  <script src="//code.jquery.com/color/jquery.color-2.1.0.js"></script>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.3.3/underscore-min.js"></script>
+  <script src="static/js/jquery.color-2.1.0.js"></script>
+  <script src="static/js/jquery.qtip.min.js"></script>
+  <script src="static/js/handlebars.min.js"></script>
+  <script src="static/js/ember.js"></script>
 
-  <script src="//cdn.jsdelivr.net/qtip2/2.0.0/jquery.qtip.min.js"></script>
-
-<!--  <script src="static/js/handlebars-1.0.0.beta.6.js"></script>-->
-<!--  <script src="static/js/ember.js"></script> -->
-<script src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/1.0.rc.1/handlebars.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/ember.js/1.0.0-pre.2/ember-1.0.0-pre.2.min.js"></script>
-<!--  <script src="static/js/ember-1.0.pre.js"></script> -->
-<!--  <script src="http://ajax.cdnjs.com/ajax/libs/json2/20110223/json2.js"></script> -->
   <script>
     $.ajaxSetup({ timeout: 60000 });
   </script>
@@ -57,7 +49,6 @@
       <%block name="emberapp" />
 
   </body>
-
 
 
 </html>
