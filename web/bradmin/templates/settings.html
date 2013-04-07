@@ -6,6 +6,12 @@ Border Router Settings
 
 <%block name="emberapp">
 <script src="static/js/settings.js"></script>
+<script>
+  console.log("${release['distro']}");
+  App.distroView.set('distro', "${release['distro']}")
+  App.distroView.set('release', "${release['release']}")
+  App.distroView.set('url', "${release['url']}")
+</script>
 </%block>
 
 <%namespace name="nav" file="nav.html"/>
@@ -89,18 +95,46 @@ ${nav.bar()}
       {{#if App.lowpan.apiok}}
         {{#view App.FadeInView contentBinding="this"}}
           <div class="success" style="text-align: center; height: 5ex;">
-            <p>Connection Good
+            <p style="line-height: 4.75ex">Connection Good
           </div>
         {{/view}}
       {{else}}
         {{#view App.FadeInView contentBinding="this"}}
           <div class="failure" style="text-align: center; height: 5ex;">
-            <p>Connection Failed
+            <p style="line-height: 4.75ex">Connection Failed
           </div>
         {{/view}}
       {{/if}}
     {{/if}}
 
   </div>
+</script>
+</div>
+
+<hr>
+
+<div class="container" id="distro">
+<script type="text/x-handlebars" data-template-name="distro">
+
+  <div class="sixteen columns">
+    <h3 class="cjust">Software Update</h3>
+  </div>
+
+  <div class="two columns offset-by-six">Distribution:</div>
+  <div class="two columns"> {{view.distro}}</div> 
+  <br class="clear">
+
+  <div class="two columns offset-by-six">Release:</div>
+  <div class="two columns"> {{view.release}}</div> 
+  <br class="clear">
+
+  <div class="two columns offset-by-six">URL:</div>
+  <div class="two columns"> {{view.dispURL}}</div>
+  <br class="clear">
+
+  <div class="eight columns offset-by-six">
+    <button>Check for Updates</button>
+  </div>
+  
 </script>
 </div>

@@ -8,7 +8,8 @@ App.init = function() {
 
     App.changePassView.appendTo("#changePass");
     App.lowpanAPIView.appendTo("#lowpanAPI");
-
+    App.distroView.appendTo("#distro");
+    
     $.ajax({
 	url: "settings/lowpan",  
 	type: "GET",  
@@ -21,6 +22,16 @@ App.init = function() {
 	}
     });  
 }
+
+App.distroView = Ember.View.create({
+    templateName: "distro",
+    distro: "",
+    release: "",
+    url: "",
+    dispURL: function() {
+	return "http://" + this.get('url') + '/' + this.get('distro') + '/' + this.get('release');
+    }.property('distro', 'release', 'url'),
+});
 
 App.changePassView = Ember.View.create({
     templateName: "passwordView"

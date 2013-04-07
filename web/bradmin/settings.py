@@ -14,7 +14,16 @@ mako = MakoTemplates(app)
 @app.route("/settings")
 @login_required
 def settings():
-    return render_mako('settings.html')
+    release = {}
+    try:
+        release = json.loads(db.get('conf/release'))
+    except IOError:
+        release = { "distro": "br12", 
+                    "release": "testing",
+                    "url": "distro.lowpan.com"
+                    }
+        db.store('conf/release', json.dumps(release))
+    return render_mako('settings.html', release = release)
 
 @app.route("/settings/newpass", methods=['POST','GET'])
 @login_required

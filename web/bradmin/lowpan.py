@@ -19,6 +19,8 @@ mako = MakoTemplates(app)
 def init():
     print "lowpan init"
 
+    os.system('killall -9 gogoc')
+
     # make a default lowpan config
     lowpanConf = None
     try:
