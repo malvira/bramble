@@ -8,6 +8,9 @@ App.init = function() {
 
     App.changePassView.appendTo("#changePass");
     App.lowpanAPIView.appendTo("#lowpanAPI");
+    App.distroView.appendTo("#distro");
+    
+    App.distroView.checkForUpdates();
 
     $.ajax({
 	url: "settings/lowpan",  
@@ -21,6 +24,65 @@ App.init = function() {
 	}
     });  
 }
+
+App.distroView = Ember.View.create({
+    templateName: "distro",
+    distro: "",
+    release: "",
+    url: "",
+    haveUpdates: false,
+    checkWait: false,
+    fullURL: function() {
+	return "http://" + this.get('url') + '/' + this.get('distro') + '/' + this.get('release');
+    }.property('distro', 'release', 'url'),
+    /* perform a check for updates.json */
+    /* Access-Control-Allow-Origin: *  must be present in the response or */
+    /* the ajax will fail */
+    checkForUpdates: function () {
+	console.log("checkForUpdates");
+//	this.set('checkWait', true); // broken, maybe fixed in newer ember?
+	$.ajax({
+	    url: this.get('fullURL') + "/updates.json",
+	    type: 'GET',
+	    dataType: "json",
+	    context: this,
+	    cache: false,
+	    success: function(data) {
+		console.log(data);
+		this.set('update', data);
+//		this.set('checkWait', false);
+		this.set('haveUpdates', true);
+	    },
+	    error: function(data) {
+//		this.set('checkWait', false);
+		this.set('haveUpdates', false);		
+	    }
+	});
+    },
+    applyUpdates: function () {
+	console.log("apply update");
+	console.log(this.get('update'));
+	$.ajax({
+	    url: "http://localhost/settings/distro/update",
+	    type: 'POST',
+	    dataType: "json",
+	    context: this,
+	    contentType: "application/json",
+	    data: JSON.stringify(this.get('update')),
+	    success: function(data) {
+		console.log('update in progress');
+		update = this.get('update');
+		this.set('distro', update.name);
+		this.set('release', update.release);
+		this.set('update', null);
+		this.checkForUpdates();
+	    },
+	    error: function(data) {
+		console.log('update failed');
+	    }
+	});	
+    }
+});
 
 App.changePassView = Ember.View.create({
     templateName: "passwordView"

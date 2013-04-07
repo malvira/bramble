@@ -1,3 +1,7 @@
+input {
+    width: 100% !important; 
+}
+
 /* no hover on disabled buttons */
 input[disabled] {
     background:#ccc;
@@ -53,6 +57,12 @@ div.login {
 .cjust {
     text-align: center;
 }
+.ljust {
+    text-align: left;
+}
+.rjust {
+    text-align: right;
+}
 
 .tip {
     vertical-align: middle;
@@ -62,10 +72,12 @@ div.login {
     background: #A8F7AD;
     color: #198C21;
     border-radius: 10px;
+    margin: 0 0 20px;
 }
 
 .failure {
     background: #FF8793;
     color: #AD0516;
     border-radius: 10px;
+    margin: 0 0 20px;
 }
