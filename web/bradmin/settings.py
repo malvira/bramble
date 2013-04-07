@@ -20,7 +20,7 @@ def settings():
     except IOError:
         release = { "distro": "br12", 
                     "release": "testing",
-                    "url": "distro.lowpan.com"
+                    "url": "distro.lowpan.com/distro"
                     }
         db.store('conf/release', json.dumps(release))
     return render_mako('settings.html', release = release)

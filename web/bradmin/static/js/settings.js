@@ -10,6 +10,8 @@ App.init = function() {
     App.lowpanAPIView.appendTo("#lowpanAPI");
     App.distroView.appendTo("#distro");
     
+    App.distroView.checkForUpdates();
+
     $.ajax({
 	url: "settings/lowpan",  
 	type: "GET",  
@@ -28,9 +30,32 @@ App.distroView = Ember.View.create({
     distro: "",
     release: "",
     url: "",
-    dispURL: function() {
+    haveUpdates: false,
+    checkWait: false,
+    fullURL: function() {
 	return "http://" + this.get('url') + '/' + this.get('distro') + '/' + this.get('release');
     }.property('distro', 'release', 'url'),
+    /* perform a check for updates.json */
+    /* Access-Control-Allow-Origin: *  must be present in the response or */
+    /* the ajax will fail */
+    checkForUpdates: function () {
+	this.set('checkWait', true);
+	$.ajax({
+	    url: this.get('fullURL') + "/updates.json",
+	    type: 'GET',
+	    dataType: "json",
+	    context: this,
+	    success: function(data) {
+		console.log(data);
+		this.set('checkWait', false);
+		this.set('haveUpdates', true);
+	    },
+	    error: function(data) {
+		this.set('checkWait', false);
+		this.set('haveUpdates', false);		
+	    }
+	});	
+    }
 });
 
 App.changePassView = Ember.View.create({

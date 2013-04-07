@@ -129,11 +129,34 @@ ${nav.bar()}
   <br class="clear">
 
   <div class="two columns offset-by-six">URL:</div>
-  <div class="two columns"> {{view.dispURL}}</div>
+  <div class="two columns"> {{view.fullURL}}</div>
   <br class="clear">
 
   <div class="eight columns offset-by-six">
     <button>Check for Updates</button>
+
+    <img src="static/images/ajax-loader.gif" class="spinner" 
+	 {{bindAttr class="App.distroView.checkWait:visible"}}>
+
+    {{#if App.distroView.checkWait}}
+    checking for updates...
+    {{else}}
+      {{#if App.distroView.haveUpdates}}
+        {{#view App.FadeInView contentBinding="this"}}
+          <div class="success" style="text-align: center; height: 5ex;">
+            <p style="line-height: 4.75ex">Update available
+          </div>
+        {{/view}}
+      {{else}}
+        {{#view App.FadeInView contentBinding="this"}}
+          <div class="failure" style="text-align: center; height: 5ex;">
+            <p style="line-height: 4.75ex">No updates available
+          </div>
+        {{/view}}
+      {{/if}}
+    {{/if}}
+
+
   </div>
   
 </script>
