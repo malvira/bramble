@@ -4,6 +4,14 @@
 Border Router Settings
 </%block>
 
+<%block name="head">
+<script type="text/javascript" >
+  ENV = {
+  RAISE_ON_DEPRECATION: true,
+  };
+</script>
+</%block>
+
 <%block name="emberapp">
 <script src="static/js/settings.js"></script>
 <script>
@@ -74,13 +82,13 @@ ${nav.bar()}
     <h3 class="cjust">Lowpan API</h3>
   </div>
 
-  <div class="four columns offset-by-six">Lowpan URL:</div>
-  <div class="four columns offset-by-six">
+  <div class="six columns offset-by-five">Lowpan URL:</div>
+  <div class="six columns offset-by-five">
     {{view Em.TextField valueBinding="App.lowpan.url"}}
   </div>
 
-  <div class="four columns offset-by-six">API Key:</div>
-  <div class="four columns offset-by-six">
+  <div class="six columns offset-by-five">API Key:</div>
+  <div class="six columns offset-by-five">
     {{view Em.TextField valueBinding="App.lowpan.apikey"}}
   </div>
   
@@ -95,13 +103,13 @@ ${nav.bar()}
       {{#if App.lowpan.apiok}}
         {{#view App.FadeInView contentBinding="this"}}
           <div class="success" style="text-align: center; height: 5ex;">
-            <p style="line-height: 4.75ex">Connection Good
+            <p style="line-height: 4.75ex">API Good
           </div>
         {{/view}}
       {{else}}
         {{#view App.FadeInView contentBinding="this"}}
           <div class="failure" style="text-align: center; height: 5ex;">
-            <p style="line-height: 4.75ex">Connection Failed
+            <p style="line-height: 4.75ex">API Failed
           </div>
         {{/view}}
       {{/if}}
@@ -120,38 +128,40 @@ ${nav.bar()}
     <h3 class="cjust">Software Update</h3>
   </div>
 
-  <div class="two columns offset-by-six">Distribution:</div>
-  <div class="two columns"> {{view.distro}}</div> 
+  <p>
+  <div class="three columns offset-by-five">Distribution:</div>
+  <div class="three columns rjust"> {{view.distro}}</div> 
   <br class="clear">
 
-  <div class="two columns offset-by-six">Release:</div>
-  <div class="two columns"> {{view.release}}</div> 
+  <div class="three columns offset-by-five">Release:</div>
+  <div class="three columns rjust"> {{view.release}}</div> 
   <br class="clear">
 
-  <div class="two columns offset-by-six">URL:</div>
-  <div class="two columns"> {{view.fullURL}}</div>
+  <div class="one columns offset-by-five">URL:</div>
+  <div class="five columns rjust"> {{view.fullURL}}</div>
   <br class="clear">
-
-  <div class="eight columns offset-by-six">
-    <button>Check for Updates</button>
-
+  
+  <p>
+  <div class="four cjust columns offset-by-six">
+    {{#if App.distroView.checkWait}}
+    <p>
+    checking for updates...
     <img src="static/images/ajax-loader.gif" class="spinner" 
 	 {{bindAttr class="App.distroView.checkWait:visible"}}>
-
-    {{#if App.distroView.checkWait}}
-    checking for updates...
     {{else}}
       {{#if App.distroView.haveUpdates}}
         {{#view App.FadeInView contentBinding="this"}}
           <div class="success" style="text-align: center; height: 5ex;">
             <p style="line-height: 4.75ex">Update available
           </div>
+	  <button>Apply Updates</button>
         {{/view}}
       {{else}}
         {{#view App.FadeInView contentBinding="this"}}
           <div class="failure" style="text-align: center; height: 5ex;">
             <p style="line-height: 4.75ex">No updates available
           </div>
+	  <button {{action "checkForUpdates" target="App.distroView"}} >Check for Updates</button>
         {{/view}}
       {{/if}}
     {{/if}}

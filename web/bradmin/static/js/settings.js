@@ -39,7 +39,8 @@ App.distroView = Ember.View.create({
     /* Access-Control-Allow-Origin: *  must be present in the response or */
     /* the ajax will fail */
     checkForUpdates: function () {
-	this.set('checkWait', true);
+	console.log("checkForUpdates");
+//	this.set('checkWait', true); // broken, maybe fixed in newer ember?
 	$.ajax({
 	    url: this.get('fullURL') + "/updates.json",
 	    type: 'GET',
@@ -47,11 +48,11 @@ App.distroView = Ember.View.create({
 	    context: this,
 	    success: function(data) {
 		console.log(data);
-		this.set('checkWait', false);
+//		this.set('checkWait', false);
 		this.set('haveUpdates', true);
 	    },
 	    error: function(data) {
-		this.set('checkWait', false);
+//		this.set('checkWait', false);
 		this.set('haveUpdates', false);		
 	    }
 	});	
