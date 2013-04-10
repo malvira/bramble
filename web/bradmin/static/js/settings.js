@@ -48,12 +48,36 @@ App.distroView = Ember.View.create({
 	    context: this,
 	    success: function(data) {
 		console.log(data);
+		this.set('update', data);
 //		this.set('checkWait', false);
 		this.set('haveUpdates', true);
 	    },
 	    error: function(data) {
 //		this.set('checkWait', false);
 		this.set('haveUpdates', false);		
+	    }
+	});
+    },
+    applyUpdates: function () {
+	console.log("apply update");
+	console.log(this.get('update'));
+	$.ajax({
+	    url: "http://localhost/settings/distro/update",
+	    type: 'POST',
+	    dataType: "json",
+	    context: this,
+	    contentType: "application/json",
+	    data: JSON.stringify(this.get('update')),
+	    success: function(data) {
+		console.log('update in progress');
+		update = this.get('update');
+		this.set('distro', update.name);
+		this.set('release', update.release);
+		this.set('update', null);
+		this.checkForUpdates();
+	    },
+	    error: function(data) {
+		console.log('update failed');
 	    }
 	});	
     }

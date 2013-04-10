@@ -154,7 +154,7 @@ ${nav.bar()}
           <div class="success" style="text-align: center; height: 5ex;">
             <p style="line-height: 4.75ex">Update available
           </div>
-	  <button>Apply Updates</button>
+	  <button {{action "applyUpdates" target="App.distroView"}} >Apply Updates</button>
         {{/view}}
       {{else}}
         {{#view App.FadeInView contentBinding="this"}}
