@@ -46,6 +46,7 @@ App.distroView = Ember.View.create({
 	    type: 'GET',
 	    dataType: "json",
 	    context: this,
+	    cache: false,
 	    success: function(data) {
 		console.log(data);
 		this.set('update', data);
