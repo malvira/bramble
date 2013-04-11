@@ -14,11 +14,11 @@ ${nav.bar()}
 <link rel="stylesheet" href="static/stylesheets/mesh.css">
 
 <div class="container">
-  <div id="mesh" class="ten columns"></div>
+  <div id="mesh" class="panel ten columns" style="padding: 0"></div>
   <div id="nodes" class="six columns clearfix">
 
 
-    <div id="list" class="six columns" style="overflow: auto">
+    <div id="list" class="panel six columns alpha omega" style="overflow: auto">
       <script type="text/x-handlebars" data-template-name="node-list">
 	{{#view}}
 	{{each App.nodes itemViewClass="App.nodeItemView"}}
@@ -26,7 +26,7 @@ ${nav.bar()}
       </script>
     </div>
 
-    <div id="details" class="six columns">
+    <div id="details" class="panel six columns alpha omega">
       <script type="text/x-handlebars" data-template-name="node-details">
 	{{#if App.selectedNode}}
 	{{#view App.selectedNodeView}}

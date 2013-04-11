@@ -140,8 +140,9 @@ App.init = function() {
 App.nodes = Em.ArrayController.create({
     content: [],
     addIfNew: function(n) {
-	if (this.findProperty('eui', n.eui) == null) {
+	if (this.findProperty('eui', n.eui) == null) {	    
 	    this.pushObject(n);
+	    if (App.selectedNode == null) { App.set('selectedNode', n); }
 	    var c = this.get('content');
 	    c.sort(function(a,b) {
 		return a.eui - b.eui;

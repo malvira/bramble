@@ -61,9 +61,14 @@ window.addEdge = function(edge) {
 };
 
 function resize() {
-    window.force.size([$("#mesh").width(), $(window).height()]);
+
     var navh = $("#nav").height();
-    $("#mesh").height($(window).height() - navh - 75);
+    var h = $(window).height() - navh - 75;
+    var w  = $("#mesh").width();
+
+    $("#mesh").height(h);
+    window.force.size([w *= 2 / 3, h *= 2 / 3]); 
+
     $("#nodes").height($(window).height() - navh - 75 );
     $("#list").height(($(window).height() - navh) * .5);
 };
@@ -146,9 +151,16 @@ var force;
 
 (function() {
 
-    $("#mesh").height($(window).height());
+    var navh = $("#nav").height();
+    var h = $(window).height() - navh - 75 - 2; /* -2 for the box border */
+    var w  = $("#mesh").width();
 
-    svg = d3.select("#mesh").append("svg");
+    $("#mesh").height(h);
+    
+    svg = d3.select("#mesh").append("svg")
+	.attr('width', w)
+	.attr('height', h);
+    
     svg.append("defs").append("marker")
 	.attr("id", "prefarrow").attr("orient", "auto").attr("viewBox","0 0 20 20")
 	.attr("refX", "35").attr("refY", "10")
@@ -166,7 +178,7 @@ var force;
 	.linkDistance(function(d) { if (d.etx > 1 ) { return d.etx * 100; } else { return 75; }})
 	.charge(-100)
 	.gravity(0.01)
-	.size([$("#mesh").width(), $(window).height()]);
+	.size([w *= 2 / 3, h *= 2 / 3]); 
 
     nodes = force.nodes();
     links  = force.links();
