@@ -63,7 +63,7 @@ App.distroView = Ember.View.create({
 	console.log("apply update");
 	console.log(this.get('update'));
 	$.ajax({
-	    url: "http://localhost/settings/distro/update",
+	    url: "/settings/distro/update",
 	    type: 'POST',
 	    dataType: "json",
 	    context: this,
