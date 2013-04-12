@@ -41,7 +41,10 @@ def load_radio():
     try:
         subprocess.call(['uartsel', 'mc'])
     except OSError:
+	print "error calling uartsel mc"
         pass
+    subprocess.call(['killall', '-9', 'mc1322x-load'])
+    time.sleep(.5)
     subprocess.call(['mc1322x-load', '-e', '-r', 'none', '-f', os.path.join(app.config['CACHE_ROOT'],'br.bin'), '-t', tunslip['device'], '-c', radio['resetcmd']])
 
     devnull = open('/dev/null', 'w')
