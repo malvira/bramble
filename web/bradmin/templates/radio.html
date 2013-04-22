@@ -30,6 +30,11 @@ ${nav.bar()}
     
     <div class="four columns offset-by-six"><h4>Radio</h4></div>
 
+    <div class="two columns offset-by-six"><label>Channel:</label></div>
+
+    <div class="two columns">{{view Em.Select contentBinding="App.radio.channels"}}</div>
+    <div class="cjust four columns offset-by-six"><button>Change</button></div>
+
     <div class="four columns offset-by-six">Radio Firmware:</div>
     <div class="four columns offset-by-six">
       <form enctype="multipart/form-data" method="post">

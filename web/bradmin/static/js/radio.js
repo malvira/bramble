@@ -63,6 +63,8 @@ App.mainViewClass = Ember.View.extend({
 App.mainView = App.mainViewClass.create();
 
 App.radio = Ember.Object.create ({
+    channels: [11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26],
+    channel: null,
     firmware: null,
     resetcmd: null,
     save: function() {
