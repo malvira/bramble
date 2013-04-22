@@ -6,6 +6,10 @@ Radio Settings
 
 <%block name="emberapp">
 <script src="static/js/radio.js"></script>
+<script>
+  App.radio.set('newChannel', ${radio['channel']})
+  App.radio.set('oldChannel', ${radio['channel']})
+</script>
 </%block>
 
 <%namespace name="nav" file="nav.html"/>
@@ -29,6 +33,11 @@ ${nav.bar()}
     <div class="four columns offset-by-six"><h3>Settings</h3></div>
     
     <div class="four columns offset-by-six"><h4>Radio</h4></div>
+
+    <div class="two columns offset-by-six"><label>Channel:</label></div>
+
+    <div class="two columns">{{view Em.Select contentBinding="App.radio.channels" valueBinding="App.radio.newChannel"}}</div>
+    <div class="cjust four columns offset-by-six"><button {{action changeChannel target="App.radio"}}>Change</button></div>
 
     <div class="four columns offset-by-six">Radio Firmware:</div>
     <div class="four columns offset-by-six">

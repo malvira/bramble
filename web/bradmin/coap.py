@@ -1,4 +1,5 @@
 import subprocess
+import urllib
 
 from flask import request, jsonify
 from flask.ext.login import login_required
@@ -16,9 +17,13 @@ def doCoap():
         return jsonify(response=get('coap://[%s]/%s' % (r['ip'], r['path'])).rstrip())
 
 def get(url):
-    # time out coap after 10 sec
-    # contiki default is 2 sec and 4 retries
-    return subprocess.check_output(['coap-client', '-B', '10', url])
+    # time out coap after 70 sec
+    # contiki default is 2 sec and 4 retries, can go as long as 62 seconds
+    return subprocess.check_output(['coap-client', '-B', '70', url])
+
+def post(url, data):
+    d = urllib.quote_plus(str(data))
+    return subprocess.check_output(['coap-client', '-B', '70', '-m', 'POST', '-e', d, url])
 
 if __name__ == "__main__":
     import sys
