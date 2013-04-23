@@ -64,9 +64,31 @@ App.mainView = App.mainViewClass.create();
 
 App.radio = Ember.Object.create ({
     channels: [11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26],
-    channel: null,
+    newChannel: null,
+    oldChannel: null,
     firmware: null,
     resetcmd: null,
+    changeChannel: function () {
+	console.log("change channel");
+	if (this.get('newChannel') != this.get('oldChannel')) {
+	    console.log("setting new channel")
+	    $.ajax({
+		url: "radio/channel",
+		type: "POST",
+		context: this,
+		contentType: "application/json",
+		data: JSON.stringify({
+		    "channel": this.get('newChannel'),
+		}),
+		success: function(data) {
+		    this.set('oldChannel', this.get('newChannel'));
+		}
+	    });
+	}	
+    },
+    channelChangeOk: function () {
+	return this.get('newChannel') != this.get('oldChannel');
+    }.property('newChannel', 'oldChannel'),
     save: function() {
 	$.ajax({
 	    url: "radio/radio",

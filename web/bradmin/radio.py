@@ -9,7 +9,7 @@ from flask.ext.mako import MakoTemplates
 from flask.ext.mako import render_template as render_mako
 
 from bradmin import app, db, conf, rest
-import bradmin.coap
+import bradmin.coap as coap
 
 mako = MakoTemplates(app)
 
@@ -29,12 +29,13 @@ def channel():
         ips = get_radio_ip()
     except (ValueError, subprocess.CalledProcessError):
         return jsonify(status = 'error')
-    
-    if request.method == 'GET':
-        pass
-    else:
-        pass
 
+    if request.method == 'POST':
+        coap.post('coap://[%s]/config?param=channel' % (ips['addrs'][0]), request.json['channel'])
+        load_radio()
+        return jsonify(status = 'ok')
+    else: # GET
+        return coap.get('coap://[%s]/config?param=channel' % (ips['addrs'][0]))
 
 def get_radio_ip():
     # it's diffcult to get the trailing commas correct in the Contiki IP addr output 
@@ -72,6 +73,10 @@ def load_radio():
             pass
     time.sleep(1)
 
+    # save the radio ip addr
+    radio['ips'] = get_radio_ip()['addrs']
+    print "Radio ips are %s" % (radio['ips'])
+
     if result is None:
         print "Using fallback address %s/64" % (tunslip['address'])
         os.system("tunslip6 -v3 -s %s %s > %s &" % (tunslip['device'], tunslip['address'], os.path.join(app.config['CACHE_ROOT'],'tunslip6.log')))
@@ -83,6 +88,12 @@ def load_radio():
     
     os.system("for i in /proc/sys/net/ipv6/conf/*; do echo 1 > $i/forwarding; done")
 
+    # get the current channel
+    radio['channel'] = coap.get('coap://[%s]/config?param=channel' % (radio['ips'][0])).rstrip()
+    print "Radio set to channel %s" % (radio['channel'])
+
+    db.store('conf/radio', json.dumps(radio))
+
 @app.route("/radio", methods=['GET', 'POST'])
 @login_required
 def radio():
@@ -93,7 +104,10 @@ def radio():
             load_radio()
         except IOError:
             return render_mako('radio.html', error={'badupload':['resetcmd']} )
-    return render_mako('radio.html', error={})
+
+    # GET
+    radio = json.loads(db.get('conf/radio'))            
+    return render_mako('radio.html', error={}, radio = radio)
 
 @app.route("/radio/radio", methods=['POST','GET'])
 @login_required
