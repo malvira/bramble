@@ -9,6 +9,7 @@ from flask.ext.mako import MakoTemplates
 from flask.ext.mako import render_template as render_mako
 
 from bradmin import app, db, conf, rest
+import bradmin.coap
 
 mako = MakoTemplates(app)
 
@@ -20,6 +21,20 @@ def ip():
     except (ValueError, subprocess.CalledProcessError):
         return jsonify(status = 'error')
     return jsonify(ips)
+
+@app.route("/radio/channel", methods=['POST', 'GET'])
+@login_required
+def channel():
+    try:
+        ips = get_radio_ip()
+    except (ValueError, subprocess.CalledProcessError):
+        return jsonify(status = 'error')
+    
+    if request.method == 'GET':
+        pass
+    else:
+        pass
+
 
 def get_radio_ip():
     # it's diffcult to get the trailing commas correct in the Contiki IP addr output 
