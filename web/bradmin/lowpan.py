@@ -4,6 +4,7 @@ import urllib2
 import md5
 import string
 import time
+import urllib2
 from random import choice
 
 from flask import render_template, redirect, url_for, request, jsonify
@@ -17,6 +18,25 @@ from bradmin import app, db, conf, rest
 bcrypt = Bcrypt(app)
 mako = MakoTemplates(app)
 
+def getBRInfo(eui, key):
+    """ return True if eui and br key combination are ok """
+    data = json.dumps({ "apikey": key })
+    url = "https://cloud-1-ord.lowpan.com/api/br/" + eui
+    req = urllib2.Request(url, data, {'Content-Type': 'application/json'})
+    f = urllib2.urlopen(req)
+    response = json.loads(f.read())
+    f.close()
+    return response
+
+def createDefaultConf():
+    lowpanConf = { 
+        "url" : None, 
+        "password" : None,
+        "realm" : "lowpan",
+        "gogo-conf": "/etc/gogoc"
+        }
+    db.store('conf/lowpan', json.dumps(lowpanConf, sort_keys=True, indent=4))
+
 def init():
     print "lowpan init"
 
@@ -28,13 +48,7 @@ def init():
         lowpanConf = json.loads(db.get('conf/lowpan'))    
     except IOError:
         # load default config
-        lowpanConf = { 
-            "url" : None, 
-            "password" : None,
-            "realm" : "lowpan",
-            "gogo-conf": "/etc/gogoc"
-            }
-        db.store('conf/lowpan', json.dumps(lowpanConf, sort_keys=True, indent=4))
+        createDefaultConf()
 
     if (lowpanConf['url'] != None) and (lowpanConf['password'] != None):
         try:

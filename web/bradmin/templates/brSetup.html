@@ -1,0 +1,22 @@
+<%inherit file="base.html"/>
+
+<%block name="title">
+BR12 Setup
+</%block>
+
+<div class="container">
+
+  <div class="six columns offset-by-five">
+    <h2>BR12 Setup</h2>
+
+    <p>Input BR12 EUI and BR Key from Lowpan.com to setup this BR12
+
+    <form action="${url_for('brSetup')}" method=post>
+      <label>EUI:</label><input type="text" name="eui">
+      <label>BR Key:</label><input type="text" name="brkey">
+      <input type="submit" value="Setup">
+    </form>
+  </div>
+  
+</div>
+

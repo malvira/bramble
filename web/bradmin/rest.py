@@ -18,3 +18,4 @@ def jsonGetSet(dbFile, request):
             d[a] = request.json[a]
             db.store(dbFile, json.dumps(d, sort_keys=True, indent=4))
         return jsonify(status = 'ok')
+

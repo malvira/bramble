@@ -37,34 +37,48 @@ except IOError:
 
 application = app
 
-import bradmin.login
-import bradmin.push
-
-#web pages
-import bradmin.frontpage
-import bradmin.settings
-import bradmin.radio
-import bradmin.clouds
-import bradmin.mesh
-
-#API
-import bradmin.br
-import bradmin.coap
-import bradmin.lowpan
-
-#detect distribution
-distro = 'arch'
+setupMode = False
+lowpanConf = {}
 try:
-   with open('/etc/apt/sources.list') as f: 
-       distro = 'debian'
-except IOError as e:
-    pass
-
-#start up Lowpan
-bradmin.lowpan.init()
-    
-#load up the radio
-try:
-    bradmin.radio.load_radio()
+    lowpanConf = json.loads(db.get('conf/lowpan'))
 except IOError:
-    pass
+    setupMode = True
+
+print lowpanConf
+if ('url' not in lowpanConf) or ('password' not in lowpanConf) or (lowpanConf['eui'] is None) or (lowpanConf['password'] is None):
+    setupMode = True
+
+if setupMode:
+    import bradmin.setup
+else:
+    import bradmin.login
+    import bradmin.push
+
+    #web pages
+    import bradmin.frontpage
+    import bradmin.settings
+    import bradmin.radio
+    import bradmin.clouds
+    import bradmin.mesh
+
+    #API
+    import bradmin.br
+    import bradmin.coap
+    import bradmin.lowpan
+
+    #detect distribution
+    distro = 'arch'
+    try:
+       with open('/etc/apt/sources.list') as f: 
+           distro = 'debian'
+    except IOError as e:
+        pass
+
+    #start up Lowpan
+    bradmin.lowpan.init()
+
+    #load up the radio
+    try:
+        bradmin.radio.load_radio()
+    except IOError:
+        pass
