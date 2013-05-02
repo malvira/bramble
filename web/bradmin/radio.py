@@ -24,7 +24,7 @@ def ip():
 
 @app.route("/radio/channel", methods=['POST', 'GET'])
 @login_required
-def channel():
+def radioChannel():
     try:
         ips = get_radio_ip()
     except (ValueError, subprocess.CalledProcessError):
@@ -55,10 +55,15 @@ def load_radio():
     tunslip = json.loads(db.get('conf/tunslip'))
 
     try:
+        subprocess.call(['systemctl', 'stop', 'serial-getty@ttyS0.service'])
+    except OSError:
+        print "error disabling serial-getty ttyS0"
+
+    try:
         subprocess.call(['uartsel', 'mc'])
     except OSError:
 	print "error calling uartsel mc"
-        pass
+       
     subprocess.call(['killall', '-9', 'mc1322x-load'])
     time.sleep(.5)
     subprocess.call(['mc1322x-load', '-e', '-r', 'none', '-f', os.path.join(app.config['CACHE_ROOT'],'br.bin'), '-t', tunslip['device'], '-c', radio['resetcmd']])

@@ -3,6 +3,7 @@ import json
 import urllib2
 import md5
 import string
+import time
 from random import choice
 
 from flask import render_template, redirect, url_for, request, jsonify
@@ -109,6 +110,7 @@ def syncConfig():
     out = open(lowpanConf['gogo-conf'] + '/gogoc.conf', 'w')
     out.write(gogo)
 
-    os.system('killall -9 gogoc')
+    os.system('killall -HUP gogoc')
     os.system('gogoc -n > %s &' % (os.path.join(app.config['CACHE_ROOT'],'gogoc.log')))
 
+    time.sleep(5)

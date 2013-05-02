@@ -40,7 +40,7 @@ def distroUpdate():
     print "do distro update"
     print request.json
     # get the update script
-    up = urllib2.urlopen(request.json['script'])
+    up = urllib2.urlopen(unicode(request.json['script']))
     script = up.read()
     print script
     # write out the script
