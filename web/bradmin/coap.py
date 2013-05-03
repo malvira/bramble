@@ -21,11 +21,11 @@ def doCoap():
 def get(url):
     # time out coap after 70 sec
     # contiki default is 2 sec and 4 retries, can go as long as 62 seconds
-    return subprocess.check_output(['coap-client', '-B', COAP_TIMEOUT, url])
+    return subprocess.check_output(['coap-client', '-B', str(COAP_TIMEOUT), url])
 
 def post(url, data):
     d = urllib.quote_plus(str(data))
-    return subprocess.check_output(['coap-client', '-B', COAP_TIMEOUT, '-m', 'POST', '-e', d, url])
+    return subprocess.check_output(['coap-client', '-B', str(COAP_TIMEOUT), '-m', 'POST', '-e', d, url])
 
 if __name__ == "__main__":
     import sys

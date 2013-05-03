@@ -26,7 +26,7 @@ def getBRInfo(eui, key):
     f = urllib2.urlopen(req)
     response = json.loads(f.read())
     f.close()
-    return response
+    return response['device']
 
 def createDefaultConf():
     lowpanConf = { 

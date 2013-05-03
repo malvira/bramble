@@ -1,13 +1,18 @@
+import os
 import json
 
 from flask import render_template, redirect, url_for, request, abort
 from flask.ext.login import current_user
 from flask.ext.mako import MakoTemplates
 from flask.ext.mako import render_template as render_mako
+from flaskext.bcrypt import Bcrypt
 
-from bradmin import app, db, rest, lowpan
+from bradmin import app, db, rest, lowpan, conf
 
+bcrypt = Bcrypt(app)
 mako = MakoTemplates(app)
+
+BASE_URL = "https://api.lowpan.com/api/br/"
 
 def kwSet(dbFile, **kwargs):
     """ Set attributes in kword args to target file """
@@ -25,15 +30,21 @@ def brSetup():
 
         br = lowpan.getBRInfo(request.form['eui'], request.form['brkey'])
         
-        if br['status'] == 'ok':
-            lowpan.createDefaultConf()
-            lowpanConf = json.loads(db.get('conf/lowpan'))
-            lowpanConf['eui'] = request.form['eui']
-            lowpanConf['password'] = request.form['brkey']
-            lowpanConf['url'] = "https://api.lowpan.com/api/br/" + request.form['eui']
+        lowpan.createDefaultConf()
+        lowpanConf = json.loads(db.get('conf/lowpan'))
+        lowpanConf['eui'] = request.form['eui']
+        lowpanConf['password'] = request.form['brkey']
+        lowpanConf['url'] = BASE_URL + request.form['eui']
 
-            db.store('conf/lowpan', json.dumps(lowpanConf))
-            db.store('conf/br', json.dumps(br))
-            return "Now you need to restart bramble"
+        db.store('conf/lowpan', json.dumps(lowpanConf))
+        db.store('conf/br', json.dumps(br))
 
-        abort(403)
+        # change root password
+        os.system('echo "root:%s" | chpasswd' % (br['pin']))
+        # also set login password to pin
+        conf['password'] = bcrypt.generate_password_hash(br['pin'])
+        db.store('conf/bradmin', json.dumps(conf, sort_keys=True, indent=4))
+
+        os.system('sleep 3 && systemctl restart bramble')
+
+        return "Now you need to restart BRamble"
