@@ -84,19 +84,23 @@ ${nav.bar()}
 
   <div class="six columns offset-by-five">Lowpan URL:</div>
   <div class="six columns offset-by-five">
-    {{view Em.TextField valueBinding="App.lowpan.url"}}
+    {{App.lowpan.url}}
   </div>
 
   <div class="six columns offset-by-five">API Key:</div>
   <div class="six columns offset-by-five">
-    {{view Em.TextField valueBinding="App.lowpan.apikey"}}
+    {{App.lowpan.apikey}}
   </div>
   
   <div class="four columns offset-by-six">
-    <input type=submit value="Save"
+
+<%doc>    <input type=submit value="Save"
 	   {{action "save" target="App.lowpan"}} >
+</%doc>
+
     <img src="static/images/ajax-loader.gif" class="spinner" 
 	 {{bindAttr class="App.lowpan.saveWait:visible"}}>
+
 
     {{#if App.lowpan.saveWait}}
     {{else}}
