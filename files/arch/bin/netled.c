@@ -52,6 +52,8 @@ static int operstate (void)
 {
   char buf[32];
   int fd;
+  int ret; 
+
   fd = open(OPERSTATE, O_RDONLY);
   if (fd < 0) {
     perror("open");
@@ -62,12 +64,14 @@ static int operstate (void)
 	
   buf[2] = 0;
   if (strcmp("up", buf) == 0) {
-    return 1;
+    ret = 1;
   } else {
-    return 0;
+    ret = 0;
   }
 
   close(fd);
+
+  return ret;
 
 }
 
