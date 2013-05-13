@@ -1,0 +1,11 @@
+# Just echo our DHCP options we have
+
+if 
+[ "$reason" = "BOUND" ] ||
+[ "$reason" = "RENEW" ] ||
+[ "$reason" = "REBIND" ] ||
+[ "$reason" = "REBOOT" ]; then
+   echo "good" > /tmp/dhcp-state
+else
+   echo "bad" > /tmp/dhcp-state
+fi

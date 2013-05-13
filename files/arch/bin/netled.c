@@ -8,7 +8,7 @@
  
 #define RX_FILE "/sys/class/net/eth0/statistics/rx_bytes"
 #define TX_FILE "/sys/class/net/eth0/statistics/tx_bytes"
-#define OPERSTATE "/sys/class/net/eth0/operstate"
+#define OPERSTATE "/tmp/dhcp-state"
 
 #define ON "0"
 #define OFF "1"
@@ -91,8 +91,7 @@ static int operstate (void)
 
   read(fd, buf, 32);
 	
-  buf[2] = 0;
-  if (strcmp("up", buf) == 0) {
+  if (strncmp("good", buf, 4) == 0) {
     ret = 1;
   } else {
     ret = 0;
