@@ -40,8 +40,6 @@ def createDefaultConf():
 def init():
     print "lowpan init"
 
-    os.system('killall -9 gogoc')
-
     # make a default lowpan config
     lowpanConf = None
     try:
@@ -124,7 +122,6 @@ def syncConfig():
     out = open(lowpanConf['gogo-conf'] + '/gogoc.conf', 'w')
     out.write(gogo)
 
-    os.system('killall -HUP gogoc')
-    os.system('gogoc -n > %s &' % (os.path.join(app.config['CACHE_ROOT'],'gogoc.log')))
+    os.system('systemctl restart gogoc')
 
     time.sleep(5)

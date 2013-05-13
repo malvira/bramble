@@ -1,0 +1,12 @@
+[Unit]
+Description=WAN led
+After=syslog.target
+
+[Service]
+ExecStart=/root/bramble/files/arch/bin/netled
+Restart=always
+Type=simple
+StandardError=syslog
+
+[Install]
+WantedBy=multi-user.target

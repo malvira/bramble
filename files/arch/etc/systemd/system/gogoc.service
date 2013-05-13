@@ -1,0 +1,12 @@
+[Unit]
+Description=TSP tunnel (gogoc)
+After=syslog.target
+
+[Service]
+ExecStart=/usr/bin/gogoc -n -r 10
+Restart=always
+Type=simple
+StandardError=syslog
+
+[Install]
+WantedBy=multi-user.target
