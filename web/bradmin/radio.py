@@ -37,6 +37,10 @@ def radioChannel():
     else: # GET
         return coap.get('coap://[%s]/config?param=channel' % (ips['addrs'][0]))
 
+def setSerial(serial):
+    ips = get_radio_ip()
+    coap.post('coap://[%s]/config?param=serial' % (ips['addrs'][0]), serial)
+
 def get_radio_ip():
     # it's diffcult to get the trailing commas correct in the Contiki IP addr output 
     # so we don't (get it correct) and fix up the last trailing comma here

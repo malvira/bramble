@@ -50,6 +50,8 @@ if ('url' not in lowpanConf) or ('password' not in lowpanConf) or (lowpanConf['e
 
 if setupMode:
     import bradmin.setup
+    import bradmin.radio
+    bradmin.radio.load_radio()
 else:
     import bradmin.login
     import bradmin.push

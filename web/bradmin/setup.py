@@ -7,7 +7,7 @@ from flask.ext.mako import MakoTemplates
 from flask.ext.mako import render_template as render_mako
 from flaskext.bcrypt import Bcrypt
 
-from bradmin import app, db, rest, lowpan, conf
+from bradmin import app, db, rest, lowpan, conf, coap, radio
 
 bcrypt = Bcrypt(app)
 mako = MakoTemplates(app)
@@ -39,6 +39,8 @@ def brSetup():
         db.store('conf/lowpan', json.dumps(lowpanConf))
         db.store('conf/br', json.dumps(br))
 
+        # set the radio's serial (which also sets the eui)
+	radio.setSerial(br['m12serial'])
         # change root password
         os.system('echo "root:%s" | chpasswd' % (br['pin']))
         # also set login password to pin
