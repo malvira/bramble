@@ -48,7 +48,10 @@ def brSetup():
         db.store('conf/br', json.dumps(br))
 
         # set the radio's serial (which also sets the eui)
-	radio.setSerial(br['m12serial'])
+        try:
+            radio.setSerial(br['m12serial'])
+        except KeyError:
+            print "Warning: no m12 serial number set"
         # change root password
         os.system('echo "root:%s" | chpasswd' % (br['pin']))
         # also set login password to pin
