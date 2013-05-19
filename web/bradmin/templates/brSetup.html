@@ -14,6 +14,8 @@ BR12 Setup
     <form action="${url_for('brSetup')}" method=post>
       <label>EUI:</label><input type="text" name="eui">
       <label>BR Key:</label><input type="text" name="brkey">
+      <label>URL:</label><input type="text" name="url" placeholder="${url}">
+      <div>(e.g. https://api.lowpan.com/api/br)</div>
       <input type="submit" value="Setup">
     </form>
   </div>

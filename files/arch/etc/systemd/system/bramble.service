@@ -4,6 +4,7 @@ After=syslog.target
 
 [Service]
 ExecStart=/usr/bin/python /root/bramble/web/runserver.py
+ExecStopPre=killall -HUP tunslip6
 Restart=always
 Type=simple
 StandardError=syslog

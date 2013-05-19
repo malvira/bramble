@@ -24,17 +24,25 @@ def kwSet(dbFile, **kwargs):
 @app.route("/", methods=['GET', 'POST'])
 def brSetup():
     if request.method == 'GET':
-        return render_mako('brSetup.html')
+        return render_mako('brSetup.html', url=BASE_URL)
 
     elif request.method == 'POST':
 
-        br = lowpan.getBRInfo(request.form['eui'], request.form['brkey'])
-        
+	baseurl = BASE_URL
+        br = {}
+	if request.form['url'] != '':
+	    baseurl = request.form['url']
+	    if baseurl[-1] != '/':
+	        baseurl = baseurl + '/'
+            br = lowpan.getBRInfo(request.form['eui'], request.form['brkey'], baseurl)
+        else: 
+            br = lowpan.getBRInfo(request.form['eui'], request.form['brkey'])
+
         lowpan.createDefaultConf()
         lowpanConf = json.loads(db.get('conf/lowpan'))
         lowpanConf['eui'] = request.form['eui']
         lowpanConf['password'] = request.form['brkey']
-        lowpanConf['url'] = BASE_URL + request.form['eui']
+        lowpanConf['url'] = baseurl + request.form['eui']
 
         db.store('conf/lowpan', json.dumps(lowpanConf))
         db.store('conf/br', json.dumps(br))

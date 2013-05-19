@@ -18,10 +18,10 @@ from bradmin import app, db, conf, rest
 bcrypt = Bcrypt(app)
 mako = MakoTemplates(app)
 
-def getBRInfo(eui, key):
+def getBRInfo(eui, key, baseurl="https://api.lowpan.com/api/br/"):
     """ return True if eui and br key combination are ok """
     data = json.dumps({ "apikey": key })
-    url = "https://api.lowpan.com/api/br/" + eui
+    url = baseurl + eui
     req = urllib2.Request(url, data, {'Content-Type': 'application/json'})
     f = urllib2.urlopen(req)
     response = json.loads(f.read())
