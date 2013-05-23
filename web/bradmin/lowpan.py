@@ -15,6 +15,11 @@ from flaskext.bcrypt import Bcrypt
 
 from bradmin import app, db, conf, rest
 
+from bradmin.utils import getBaseDistro
+from bradmin.radio import load_radio
+
+from pprint import pprint
+
 bcrypt = Bcrypt(app)
 mako = MakoTemplates(app)
 
@@ -40,6 +45,10 @@ def createDefaultConf():
 def init():
     print "lowpan init"
 
+    if getBaseDistro() == 'debian':
+        os.system('killall -9 gogoc')
+        os.system('gogoc')
+
     # make a default lowpan config
     lowpanConf = None
     try:
@@ -54,30 +63,13 @@ def init():
         except urllib2.HTTPError:
             print "Couldn't connect to lowpan"
 
-def syncConfig():
-    """ get BR information from Lowpan """
-    lowpanConf = json.loads(db.get('conf/lowpan'))
-
-    try:
-        response = urllib2.urlopen( lowpanConf['url'] + '?apikey=' + lowpanConf['password'] )
-        brConf = json.loads(response.read())
-    except:
-        print "couldn't connect to lowpan"
-        return
-
-    db.store('conf/br', json.dumps(brConf, sort_keys=True, indent=4))
-    
-
-    # create gogoc.conf
-    distro = 'arch'
-    try:
-       with open('/etc/apt/sources.list') as f: 
-           distro = 'debian'
-    except IOError as e:
-        pass
-
+def updateGogoc():
     # search for lowpan.json config file
     search = ['/etc/gogoc', '/var/cache/bradmin', '/etc/lowpan', '/usr/local/etc/lowpan', '.']
+
+    lowpanConf = json.loads(db.get('conf/lowpan'))
+    brConf = json.loads(db.get('conf/br'))
+    distro = getBaseDistro()
 
     gogotmpl = None
     for s in search:
@@ -122,6 +114,30 @@ def syncConfig():
     out = open(lowpanConf['gogo-conf'] + '/gogoc.conf', 'w')
     out.write(gogo)
 
-    os.system('systemctl restart gogoc')
+    if distro == 'arch':
+        os.system('systemctl restart gogoc')
+    elif distro == 'debian':
+        os.system('killall -9 gogoc')
+        os.system('gogoc')
 
     time.sleep(5)
+
+
+def syncConfig():
+    """ get BR information from Lowpan """
+    lowpanConf = json.loads(db.get('conf/lowpan'))
+
+    oldbrConf = json.loads(db.get('conf/br'))
+    response = urllib2.urlopen( lowpanConf['url'] + '?apikey=' + lowpanConf['password'] )
+    brConf = json.loads(response.read())
+
+    db.store('conf/br', json.dumps(brConf, sort_keys=True, indent=4))
+
+    # if our tunnel is different, update gogoc config and restart
+    if 'tunnel' in oldbrConf['device'] and \
+            (set(oldbrConf['device']['tunnel'].items()) == set(brConf['device']['tunnel'].items())):
+        return ["no change"]
+    else:
+        print "new lowpan tunnel found; updating gogoc configuration"
+        updateGogoc()
+        return ["new tunnel"]

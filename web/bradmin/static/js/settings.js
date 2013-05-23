@@ -12,6 +12,21 @@ App.init = function() {
     
     App.distroView.checkForUpdates();
 
+    App.socket = io.connect('/chat');
+    App.socket.on('you_joined', function(data) {
+	console.log("You joined " + data);
+    });
+    App.socket.on('foo', function(data) {
+	console.log("foo: " + data);
+    });
+
+    App.statusSocket = io.connect('/status');
+    App.statusSocket.on('lowpanAPI', function(data) {
+	console.log("lowpan check " + data);
+    });
+
+    setTimeout(function() { App.socket.emit('join', 'foobar'); }, 2000);
+
     $.ajax({
 	url: "settings/lowpan",  
 	type: "GET",  

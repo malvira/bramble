@@ -1,7 +1,8 @@
+import json
+
 from flask import Flask, request, session, g, redirect, url_for, \
      abort, render_template, flash
 from flaskext.bcrypt import Bcrypt
-import json
 
 # default config
 
@@ -44,7 +45,6 @@ try:
 except IOError:
     setupMode = True
 
-print lowpanConf
 if ('url' not in lowpanConf) or ('password' not in lowpanConf) or (lowpanConf['eui'] is None) or (lowpanConf['password'] is None):
     setupMode = True
 
@@ -67,6 +67,12 @@ else:
     import bradmin.br
     import bradmin.coap
     import bradmin.lowpan
+
+    #socket.io sockets
+    import bradmin.sockets
+
+    #health checks
+    import bradmin.health
 
     #detect distribution
     distro = 'arch'
