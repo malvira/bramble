@@ -60,7 +60,7 @@ def init():
     if (lowpanConf['url'] != None) and (lowpanConf['password'] != None):
         try:
             syncConfig()
-        except urllib2.HTTPError:
+        except (urllib2.HTTPError, LowpanAPIError):
             print "Couldn't connect to lowpan"
 
 def updateGogoc():
@@ -88,7 +88,7 @@ def updateGogoc():
     tunpassword = ''.join(choice(chars) for _ in range(length))
     m = md5.new()
     try:
-        m.update(brConf['device']['eui'])
+        m.update(brConf['eui'])
         m.update(':' + lowpanConf['realm'] + ':') 
     except KeyError:
         print "invalid config"
@@ -104,9 +104,9 @@ def updateGogoc():
     #print "sending passhash " + tunpasshash + " for password " + tunpassword
 
     gogo = ''
-    gogo = gogo + "userid=%s\n" % (brConf['device']['eui'])
+    gogo = gogo + "userid=%s\n" % (brConf['eui'])
     gogo = gogo + "passwd=%s\n" % (tunpassword)
-    gogo = gogo + "server=%s\n" % (brConf['device']['tunnel']['uri'])
+    gogo = gogo + "server=%s\n" % (brConf['tunnel']['uri'])
     gogo = gogo + "\n"
     gogo = gogo + gogotmpl.read()
     
@@ -122,6 +122,11 @@ def updateGogoc():
 
     time.sleep(5)
 
+class LowpanAPIError(Exception):
+    def __init__(self, value):
+         self.value = value
+    def __str__(self):
+         return repr(self.value)
 
 def syncConfig():
     """ get BR information from Lowpan """
@@ -129,15 +134,23 @@ def syncConfig():
 
     oldbrConf = json.loads(db.get('conf/br'))
     response = urllib2.urlopen( lowpanConf['url'] + '?apikey=' + lowpanConf['password'] )
-    brConf = json.loads(response.read())
 
-    db.store('conf/br', json.dumps(brConf, sort_keys=True, indent=4))
+    brConf = None
+    if response.getcode() != 200:
+	raise LowpanAPIError("bad HTTP response from Lowpan")
+    fromLowpan = json.loads(response.read())
+    if 'status' in fromLowpan and fromLowpan['status'] != 'ok':
+        raise LowpanAPIError("bad return value from Lowpan")
+    else:
+       brConf = fromLowpan
 
     # if our tunnel is different, update gogoc config and restart
-    if 'tunnel' in oldbrConf['device'] and \
-            (set(oldbrConf['device']['tunnel'].items()) == set(brConf['device']['tunnel'].items())):
+    if 'tunnel' in oldbrConf and \
+            (set(oldbrConf['tunnel'].items()) == set(brConf['device']['tunnel'].items())):
         return ["no change"]
     else:
         print "new lowpan tunnel found; updating gogoc configuration"
+	oldbrConf['tunnel'] = brConf['device']['tunnel']
+	db.store('conf/br', json.dumps(oldbrConf, sort_keys=True, indent=4))
         updateGogoc()
         return ["new tunnel"]

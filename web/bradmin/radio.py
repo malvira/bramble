@@ -40,7 +40,7 @@ def radioChannel():
 
 def setSerial(serial):
     ip = get_radio_not_local_ip()
-    coap.post('coap://[%s]/config?param=serial' % (ips), serial)
+    coap.post('coap://[%s]/config?param=serial' % (ip), serial)
 
 def get_radio_not_local_ip():
     for i in get_radio_ips():
@@ -108,9 +108,11 @@ def load_radio():
             pass
 
     if result is None:
+	radio['prefix-used'] = 'fallback'
         print "Using fallback address %s/64" % (tunslip['address'])
         os.system("tunslip6 -v3 -s %s %s > %s &" % (tunslip['device'], tunslip['address'], os.path.join(app.config['CACHE_ROOT'],'tunslip6.log')))
     else:
+	radio['prefix-used'] = 'tunnel'
         ipv6 = subprocess.check_output(["getbripv6.sh"]).rstrip()
         print "Using tunnel address %s/64" % (ipv6)
         time.sleep(1)
@@ -118,15 +120,18 @@ def load_radio():
     
     os.system("for i in /proc/sys/net/ipv6/conf/*; do echo 1 > $i/forwarding; done")
 
-    time.sleep(1)
+    time.sleep(5)
 
     # save the radio ip addr
     radio['ips'] = grep_radio_ip()['addrs']
     print "Radio ips are %s" % (radio['ips'])
 
     # get the current channel
-    radio['channel'] = get_radio_channel()
-    print "Radio set to channel %s" % (radio['channel'])
+    try: 
+        radio['channel'] = get_radio_channel()
+        print "Radio set to channel %s" % (radio['channel'])
+    except ValueError:
+        print "failed to get the radio channel"
 
     db.store('conf/radio', json.dumps(radio))
 

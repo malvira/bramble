@@ -45,7 +45,9 @@ def brSetup():
         lowpanConf['url'] = baseurl + request.form['eui']
 
         db.store('conf/lowpan', json.dumps(lowpanConf))
+        db.store('conf/lowpan.factory', json.dumps(lowpanConf))
         db.store('conf/br', json.dumps(br))
+        db.store('conf/br.factory', json.dumps(br))
 
         # set the radio's serial (which also sets the eui)
         try:

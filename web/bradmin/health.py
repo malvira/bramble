@@ -1,5 +1,6 @@
 import json
 import subprocess
+import urllib2
 
 from IPy import IP
 
@@ -9,7 +10,7 @@ from flask.ext.mako import MakoTemplates
 from socketio.namespace import BaseNamespace
 from socketio.mixins import BroadcastMixin
 
-from bradmin import app
+from bradmin import app, db
 import bradmin.lowpan
 
 import gevent
@@ -61,8 +62,16 @@ class LowpanAPICheck(HealthCheck):
     def __init__(self, interval=30):
         super(LowpanAPICheck, self).__init__(interval);
     def do_check(self):
-        status = bradmin.lowpan.syncConfig()
+        radio = json.loads(db.get('conf/radio'))
+
+	status = {}
+	try:
+            status = bradmin.lowpan.syncConfig()
+        except (urllib2.HTTPError, bradmin.lowpan.LowpanAPIError):
+	    pass
+
         if 'new tunnel' in status:
+	    print "new tunnel: reloading radio"
             bradmin.radio.load_radio()
 #        broadcastStatus("lowpanAPI", json.dumps(dict(status = 'ok')))
 
@@ -77,27 +86,41 @@ class RadioCheck(HealthCheck):
             print "radio check failed: %s" % (self.fails)
             self.fails = self.fails + 1
 
-        if self.fails >= 3:
-            bradmin.radio.load_radio()
-            self.fails = 0
+            if self.fails >= 3:
+                bradmin.radio.load_radio()
+                self.fails = 0
+
+            return        
+
+        # check ok
+        self.fails = 0
 
 class TunnelCheck(HealthCheck):
     def __init__(self, interval=30):
         self.fails = 0
         super(TunnelCheck, self).__init__(interval);
     def do_check(self):
+        radio = json.loads(db.get('conf/radio'))
         devnull = open('/dev/null', 'w')
         try:
             ipv6 = IP(subprocess.check_output(["getbripv6.sh"]).rstrip())
             tunnelEnd = IP((IP(ipv6).int() & ~(2**80 - 1)) + 1)
             subprocess.check_call(['ping6', '-w', '5', '-c', '1', str(tunnelEnd)], stdout=devnull)
+            if radio['prefix-used'] == 'fallback':
+                bradmin.lowpan.load_radio()
+
         except (subprocess.CalledProcessError, ValueError):
             print "tunnel check failed: %s" % (self.fails)
             self.fails = self.fails + 1
 
-        if self.fails >= 3:
-            bradmin.lowpan.updateGogoc()
-            self.fails = 0
+            if self.fails >= 3:
+                bradmin.lowpan.updateGogoc()
+                self.fails = 0
+
+            return
+
+        # check ok
+        self.fails = 0
 
 check_lowpan_api = LowpanAPICheck(30)
 check_radio = RadioCheck(10)
