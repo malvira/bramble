@@ -21,7 +21,7 @@ def ip():
         ip = get_radio_not_local_ip()
     except (ValueError, subprocess.CalledProcessError):
         return jsonify(status = 'error')
-    return jsonify(ip)
+    return jsonify(addrs = [ip])
 
 @app.route("/radio/channel", methods=['POST', 'GET'])
 @login_required
@@ -52,17 +52,27 @@ def get_radio_ips():
     ips = json.loads(db.get('conf/radio'))['ips']
     return ips
 
+class RadioError(Exception):
+    def __init__(self, value):
+         self.value = value
+    def __str__(self):
+         return repr(self.value)
+
 def grep_radio_ip():
     # it's diffcult to get the trailing commas correct in the Contiki IP addr output 
     # so we don't (get it correct) and fix up the last trailing comma here
 
     addrstr = None
+    fails = 0
     while addrstr == None:
         try: 
             addrstr = subprocess.check_output(['grep', "\"addrs\":", os.path.join(app.config['CACHE_ROOT'],'tunslip6.log')]).replace(',]',']')
         except subprocess.CalledProcessError:
             print "couldn't find radio ip addr: retrying..."
-            time.sleep(1)
+            if fails < 3:
+                time.sleep(fails + 1)
+	    else:
+	        raise RadioError("couldn't find radio ip addr")
 
     ips = json.loads(addrstr)
     return ips
@@ -123,8 +133,11 @@ def load_radio():
     time.sleep(5)
 
     # save the radio ip addr
-    radio['ips'] = grep_radio_ip()['addrs']
-    print "Radio ips are %s" % (radio['ips'])
+    try:
+        radio['ips'] = grep_radio_ip()['addrs']
+        print "Radio ips are %s" % (radio['ips'])
+    except RadioError:
+        print "Couldn't get radio IP addresses"
 
     # get the current channel
     try: 
