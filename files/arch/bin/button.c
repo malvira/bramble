@@ -132,6 +132,7 @@ int main (int argc, char ** argv)
 	       system("systemctl reboot");
            } else {
                printf("reboot\n");
+               system("mcreset");
 	       system("systemctl reboot");
            }
            held = 0;
