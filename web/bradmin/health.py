@@ -54,7 +54,7 @@ class HealthCheck(Greenlet):
             gevent.sleep(self.interval)
             self.do_check()
 
-class LowpanAPI(HealthCheck):
+class LowpanAPICheck(HealthCheck):
     def __init__(self, interval=30):
         super(LowpanAPI, self).__init__(interval);
     def do_check(self):
@@ -78,5 +78,5 @@ class RadioCheck(HealthCheck):
             bradmin.radio.load_radio()
             self.fails = 0
 
-check_lowpan_api = LowpanAPI(30)
+check_lowpan_api = LowpanAPICheck(30)
 check_radio = RadioCheck(15)
