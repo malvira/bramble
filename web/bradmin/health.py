@@ -1,4 +1,7 @@
 import json
+import subprocess
+
+from IPy import IP
 
 from flask import render_template, redirect, url_for, request, jsonify
 from flask.ext.mako import MakoTemplates
@@ -56,7 +59,7 @@ class HealthCheck(Greenlet):
 
 class LowpanAPICheck(HealthCheck):
     def __init__(self, interval=30):
-        super(LowpanAPI, self).__init__(interval);
+        super(LowpanAPICheck, self).__init__(interval);
     def do_check(self):
         status = bradmin.lowpan.syncConfig()
         if 'new tunnel' in status:
@@ -78,5 +81,24 @@ class RadioCheck(HealthCheck):
             bradmin.radio.load_radio()
             self.fails = 0
 
+class TunnelCheck(HealthCheck):
+    def __init__(self, interval=30):
+        self.fails = 0
+        super(TunnelCheck, self).__init__(interval);
+    def do_check(self):
+        devnull = open('/dev/null', 'w')
+        try:
+            ipv6 = IP(subprocess.check_output(["getbripv6.sh"]).rstrip())
+            tunnelEnd = IP((IP(ipv6).int() & ~(2**80 - 1)) + 1)
+            subprocess.check_call(['ping6', '-w', '5', '-c', '1', str(tunnelEnd)], stdout=devnull)
+        except (subprocess.CalledProcessError, ValueError):
+            print "tunnel check failed: %s" % (self.fails)
+            self.fails = self.fails + 1
+
+        if self.fails >= 3:
+            bradmin.lowpan.updateGogoc()
+            self.fails = 0
+
 check_lowpan_api = LowpanAPICheck(30)
-check_radio = RadioCheck(15)
+check_radio = RadioCheck(10)
+check_tunnel = TunnelCheck(10)
