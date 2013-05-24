@@ -2,6 +2,7 @@ import os
 import json
 import subprocess
 import time
+import re
 
 from flask import render_template, redirect, url_for, request, jsonify
 from flask.ext.login import login_required
@@ -17,31 +18,41 @@ mako = MakoTemplates(app)
 @login_required
 def ip():
     try:
-        ips = get_radio_ip()
+        ip = get_radio_not_local_ip()
     except (ValueError, subprocess.CalledProcessError):
         return jsonify(status = 'error')
-    return jsonify(ips)
+    return jsonify(ip)
 
 @app.route("/radio/channel", methods=['POST', 'GET'])
 @login_required
 def radioChannel():
     try:
-        ips = get_radio_ip()
+        ip = get_radio_not_local_ip()
     except (ValueError, subprocess.CalledProcessError):
         return jsonify(status = 'error')
 
     if request.method == 'POST':
-        coap.post('coap://[%s]/config?param=channel' % (ips['addrs'][0]), request.json['channel'])
+        coap.post('coap://[%s]/config?param=channel' % (ip), request.json['channel'])
         load_radio()
         return jsonify(status = 'ok')
     else: # GET
-        return coap.get('coap://[%s]/config?param=channel' % (ips['addrs'][0]))
+        return str(get_radio_channel)
 
 def setSerial(serial):
-    ips = get_radio_ip()
-    coap.post('coap://[%s]/config?param=serial' % (ips['addrs'][0]), serial)
+    ip = get_radio_not_local_ip()
+    coap.post('coap://[%s]/config?param=serial' % (ips), serial)
 
-def get_radio_ip():
+def get_radio_not_local_ip():
+    for i in get_radio_ips():
+        m = re.match('^([\da-fA-F]+):', i)
+        if m.group(1) != 'fe80':
+            return i
+
+def get_radio_ips():
+    ips = json.loads(db.get('conf/radio'))['ips']
+    return ips
+
+def grep_radio_ip():
     # it's diffcult to get the trailing commas correct in the Contiki IP addr output 
     # so we don't (get it correct) and fix up the last trailing comma here
 
@@ -55,6 +66,12 @@ def get_radio_ip():
 
     ips = json.loads(addrstr)
     return ips
+
+def get_radio_channel():
+    ip = get_radio_not_local_ip()
+    channel = coap.get('coap://[%s]/config?param=channel' % (ip)).rstrip()
+    # check if channel is a number
+    return int(channel)
 
 @app.route("/radio/reload", methods=['POST'])
 @login_required
@@ -104,11 +121,11 @@ def load_radio():
     time.sleep(1)
 
     # save the radio ip addr
-    radio['ips'] = get_radio_ip()['addrs']
+    radio['ips'] = grep_radio_ip()['addrs']
     print "Radio ips are %s" % (radio['ips'])
 
     # get the current channel
-    radio['channel'] = coap.get('coap://[%s]/config?param=channel' % (radio['ips'][0])).rstrip()
+    radio['channel'] = get_radio_channel()
     print "Radio set to channel %s" % (radio['channel'])
 
     db.store('conf/radio', json.dumps(radio))
