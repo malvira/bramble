@@ -59,6 +59,7 @@ def brSetup():
         # also set login password to pin
         conf['password'] = bcrypt.generate_password_hash(br['pin'])
         db.store('conf/bradmin', json.dumps(conf, sort_keys=True, indent=4))
+        db.store('conf/bradmin.factory', json.dumps(conf, sort_keys=True, indent=4))
         # set the hostname
         os.system('hostnamectl set-hostname br12-%s' % (lowpanConf['eui']))
 
