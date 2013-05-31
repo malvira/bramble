@@ -55,7 +55,7 @@ On a debian/ubuntu machine, the following should get you pretty close:
 ```
 apt-get update 
 apt-get install cython libjs-jquery python-flask python-pip python-dev ipv6calc
-pip install Flask-OpenID Flask-Login Flask-Principal Flask-Bcrypt Flask-Mako IPy
+pip install Flask-OpenID Flask-Login Flask-Principal Flask-Bcrypt Flask-Mako IPy gevent-socketio
 ```
 
 See also the advanced scripts in:

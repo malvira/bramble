@@ -12,6 +12,8 @@ from flask.ext.mako import render_template as render_mako
 from bradmin import app, db, conf, rest
 import bradmin.coap as coap
 
+from random import randint
+
 mako = MakoTemplates(app)
 
 @app.route("/radio/ip")
@@ -91,8 +93,34 @@ def reload():
 
 def load_radio():
     subprocess.call(['killall', 'tunslip6'])
-    radio = json.loads(db.get('conf/radio'))
-    tunslip = json.loads(db.get('conf/tunslip'))
+
+    try:
+        radio = json.loads(db.get('conf/radio'))
+    except IOError:
+        # configure for econotag as default
+        radio = { "device": "/dev/ttyUSB1",
+                  "resetcmd": "bbmc -l redbee-econotag reset"}
+        db.store('conf/radio', json.dumps(radio))
+
+    try:
+        tunslip = json.loads(db.get('conf/tunslip'))
+    except IOError:
+        # configure for econotag default
+        # generate a random ULA in the fd space 
+        
+        # XXX debug: tunslip gives this with a ULA assignment; not sure about this
+        # sticking with aaaa::1/64 for now...
+        # fdc8:12db:60b1:1dfd:1: Resolver Error 0 (no error)
+        # *** Address:fdc8:12db:60b1:1dfd:1 => 20b1:f762:ff7f:0000
+        # Radio ips are [u'20b1:f762:ff7f::205:c2a:8cf4:5d24', u'fe80::205:c2a:8cf4:5d24']
+#        tunslip = { "device": "/dev/ttyUSB1",
+#                    "baud": 115200,
+#                    "address": "fd%x:%x:%x:%x:1/64" % (randint(0,0xff), randint(0, 0xffff), randint(0, 0xffff), randint(0,0xffff))}
+
+        tunslip = { "device": "/dev/ttyUSB1",
+                    "baud": 115200,
+                    "address": "aaaa::1/64" }
+        db.store('conf/tunslip', json.dumps(tunslip))
 
     try:
         subprocess.call(['systemctl', 'stop', 'serial-getty@ttyS0.service'])
@@ -135,6 +163,7 @@ def load_radio():
     # save the radio ip addr
     try:
         radio['ips'] = grep_radio_ip()['addrs']
+        db.store('conf/radio', json.dumps(radio))
         print "Radio ips are %s" % (radio['ips'])
     except RadioError:
         print "Couldn't get radio IP addresses"
@@ -142,11 +171,10 @@ def load_radio():
     # get the current channel
     try: 
         radio['channel'] = get_radio_channel()
+        db.store('conf/radio', json.dumps(radio))
         print "Radio set to channel %s" % (radio['channel'])
     except ValueError:
         print "failed to get the radio channel"
-
-    db.store('conf/radio', json.dumps(radio))
 
 @app.route("/radio", methods=['GET', 'POST'])
 @login_required
