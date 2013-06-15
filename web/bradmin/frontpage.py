@@ -13,5 +13,5 @@ mako = MakoTemplates(app)
 def index():
     if current_user.is_anonymous() is True:
         return redirect(url_for('login'))
-    return render_mako('index.html', user=current_user)
+    return render_mako('mesh.html', user=current_user)
 
