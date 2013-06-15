@@ -4,60 +4,52 @@ var App = Em.Application.create({
     pollCount: 0,
     brip: null,
     getIP: function() {
-	$.ajax({  
-	    url: "radio/ip",  
-	    type: "GET",  
-	    dataType: "json",  
-	    contentType: "application/json",  
-	    success: function(data) {
-		if(data.status == 'error') { 
-		    window.setTimeout(App.getIP, 1000); 
-		    return; 
-		}
-		try {
-		    App.set('brip', data.addrs[0]);
-		    breui = ipv6ToIID(App.get('brip'));
-		    n = App.node.create({ eui: breui, addr: App.get('brip') });
-		    App.nodes.addIfNew(n);
-		    window.addNode(n);
-		    App.refreshNodes();
-		} catch(e) {
-		    window.setTimeout(App.getIP, 1000); 
-		}
-	    },
-	    error: function() {
-		window.setTimeout(App.getIP, 1000);
-	    }
-	});  
+				$.ajax({  
+						url: "radio/ip",  
+						type: "GET",  
+						dataType: "json",  
+						contentType: "application/json",  
+						success: function(data) {
+								if(data.status == 'error') { 
+										window.setTimeout(App.getIP, 1000); 
+										return; 
+								}
+								try {
+										App.set('brip', data.addrs[0]);
+										breui = ipv6ToIID(App.get('brip'));
+										n = App.node.create({ eui: breui, addr: App.get('brip') });
+										App.nodes.addIfNew(n);
+										window.addNode(n);
+										App.refreshNodes();
+								} catch(e) {
+										window.setTimeout(App.getIP, 1000); 
+								}
+						},
+						error: function() {
+								window.setTimeout(App.getIP, 1000);
+						}
+				});  
     },
     refreshNodes: function() {	
-	if(App.get('brip') == null) { return; }
-	$.ajax({  
-	    url: "coap",  
-	    type: "POST",  
-	    dataType: "json",  
-	    contentType: "application/json",  
-	    data: JSON.stringify({ 
-		"ip": App.get('brip'),
-		"method": "GET",
-		"path": "/rplinfo/routes"
-	    }),  
-	    success: function(data) {
-		resp = JSON.parse(data.response);
-		routes = resp.routes;
-		routes.forEach(function(r) {
-
-		    dest = ipv6ToIID(r.dest);
-
-		    n = App.node.create({ eui: dest, addr: r.dest });
-		    App.nodes.addIfNew(n);
-		    window.addNode(n);
-		    n.getParents();		
-		})
-	    }
-	});  	
+				if(App.get('brip') == null) { return; }
+				$.ajax({  
+						url: "/rplinfo/" + App.get('brip') + '/routes',  
+						type: "GET",  
+						contentType: "application/json",  
+						success: function(data) {
+								console.log(data);
+								routes = data.routes;
+								routes.forEach(function(r) {										
+										dest = ipv6ToIID(r.dest);										
+										n = App.node.create({ eui: dest, addr: r.dest });
+										App.nodes.addIfNew(n);
+										window.addNode(n);
+										n.getParents();		
+								});
+						}
+				});  	
     }
-
+		
 });
 
 /* get IID from an ipv6 device */
@@ -185,67 +177,63 @@ App.node = Em.Object.extend({
     eui: null,
     addr: null,
     coapURL: function() {
-	return "coap://[" + this.get('addr') + "]";
+				return "coap://[" + this.get('addr') + "]";
     }.property('addr'),
     selected: false,
     focus: false,
     select: function() {
-	if(App.selectedNode) { 
-	    App.selectedNode.set('selected', false); 
-	    window.mesh.selectAll("#eui" + App.selectedNode.eui).style("stroke", "black");
-	}
-	this.set('selected', true);
-	App.set('selectedNode', this);
-	var eui = App.get('selectedNode').get('eui');
-	window.mesh.selectAll("#eui" + eui).style("stroke", "red");
+				if(App.selectedNode) { 
+						App.selectedNode.set('selected', false); 
+						window.mesh.selectAll("#eui" + App.selectedNode.eui).style("stroke", "black");
+				}
+				this.set('selected', true);
+				App.set('selectedNode', this);
+				var eui = App.get('selectedNode').get('eui');
+				window.mesh.selectAll("#eui" + eui).style("stroke", "red");
     },
     clearEdges: function() {
-	console.log(this.eui + " clear edges");
+				console.log(this.eui + " clear edges");
     },
     getParents: function() {
-	var eui = this.eui;
-	var n = this
-	$.ajax({  
-	    url: "coap",  
-	    type: "POST",  
-	    dataType: "json",  
-	    contentType: "application/json",  
-	    data: JSON.stringify({ 
-		"ip": this.get('addr'),
-		"method": "GET",
-		"path": "/rplinfo/parents"
-	    }),
-	    success: function(data) {
-		
-		try
-		{
-		    var resp = JSON.parse(data.response);
-		    resp.parents.forEach(function(p) {
-			window.addNode(p);
-			n = App.node.create({ eui: p.eui })
-			App.nodes.addIfNew(n)
-			
-			var edge = {};
-			edge.etx = p.etx/128;
-			edge.source = window.nodeFromEUI(eui);
-			edge.target = window.nodeFromEUI(p.eui);
-			edge.pref = p.pref;
-			window.addEdge(edge);
-		    });
-		}
-		catch(e)
-		{
-		    if (data.response == '') {
-			// should remove all this nodes edges here
-			n.clearEdges();
-		    } else {
-			console.log('invalid json');
-			console.log(data.response);
-		    }
-		}
-
-	    }
-	});  
+				var eui = this.eui;
+				var n = this
+				$.ajax({  
+						url: "/rplinfo/" + this.get('addr') + '/parents',  
+						type: "GET",  
+						dataType: "json",  
+						contentType: "application/json",  
+						success: function(data) {
+								
+								console.log(data);
+								
+								try
+								{
+										data.parents.forEach(function(p) {
+												window.addNode(p);
+												n = App.node.create({ eui: p.eui })
+												App.nodes.addIfNew(n)
+												
+												var edge = {};
+												edge.etx = p.etx/128;
+												edge.source = window.nodeFromEUI(eui);
+												edge.target = window.nodeFromEUI(p.eui);
+												edge.pref = p.pref;
+												window.addEdge(edge);
+										});
+								}
+								catch(e)
+								{
+										if (data.response == '') {
+												// should remove all this nodes edges here
+												n.clearEdges();
+										} else {
+												console.log('invalid json');
+												console.log(data.response);
+										}
+								}
+								
+						}
+				});  
     }
 });
 

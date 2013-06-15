@@ -67,6 +67,7 @@ else:
     import bradmin.br
     import bradmin.coap
     import bradmin.lowpan
+    import bradmin.rplinfo
 
     #socket.io sockets
     import bradmin.sockets
