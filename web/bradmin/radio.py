@@ -11,6 +11,7 @@ from flask.ext.mako import render_template as render_mako
 
 from bradmin import app, db, conf, rest
 import bradmin.coap as coap
+from bradmin.health import broadcastStatus
 
 from random import randint
 
@@ -92,6 +93,9 @@ def reload():
     return jsonify(status = 'ok')
 
 def load_radio():
+
+    broadcastStatus("radio", json.dumps(dict(loadRadioProgress = "0%")))
+
     subprocess.call(['killall', 'tunslip6'])
 
     try:
@@ -127,14 +131,21 @@ def load_radio():
     except OSError:
         print "error disabling serial-getty ttyS0"
 
+    broadcastStatus("radio", json.dumps(dict(loadRadioProgress = "5%")))
+
     try:
         subprocess.call(['uartsel', 'mc'])
     except OSError:
 	print "error calling uartsel mc"
        
     subprocess.call(['killall', '-9', 'mc1322x-load'])
+
+    broadcastStatus("radio", json.dumps(dict(loadRadioProgress = "15%")))
+
     time.sleep(.5)
     subprocess.call(['mc1322x-load', '-e', '-r', 'none', '-f', os.path.join(app.config['CACHE_ROOT'],'br.bin'), '-t', tunslip['device'], '-c', radio['resetcmd']])
+
+    broadcastStatus("radio", json.dumps(dict(loadRadioProgress = "65%")))
 
     devnull = open('/dev/null', 'w')
     now = time.time()
@@ -158,7 +169,11 @@ def load_radio():
     
     os.system("for i in /proc/sys/net/ipv6/conf/*; do echo 1 > $i/forwarding; done")
 
+    broadcastStatus("radio", json.dumps(dict(loadRadioProgress = "75%")))
+
     time.sleep(5)
+
+    broadcastStatus("radio", json.dumps(dict(loadRadioProgress = "85%")))
 
     # save the radio ip addr
     try:
@@ -166,7 +181,10 @@ def load_radio():
         db.store('conf/radio', json.dumps(radio))
         print "Radio ips are %s" % (radio['ips'])
     except RadioError:
+        broadcastStatus("radio", json.dumps(dict(err = "failed to get the radio IP address")))
         print "Couldn't get radio IP addresses"
+
+    broadcastStatus("radio", json.dumps(dict(loadRadioProgress = "95%")))
 
     # get the current channel
     try: 
@@ -174,7 +192,11 @@ def load_radio():
         db.store('conf/radio', json.dumps(radio))
         print "Radio set to channel %s" % (radio['channel'])
     except ValueError:
+        broadcastStatus("radio", json.dumps(dict(err = "failed to get the radio channel")))
         print "failed to get the radio channel"
+
+    broadcastStatus("radio", json.dumps(dict(loadRadioProgress = "100%")))
+
 
 @app.route("/radio", methods=['GET', 'POST'])
 @login_required
@@ -182,14 +204,17 @@ def radio():
     if request.method == 'POST':
         f = request.files['file']
         f.save(os.path.join(app.config['CACHE_ROOT'], 'br.bin'))
-        try:
-            load_radio()
-        except IOError:
-            return render_mako('radio.html', error={'badupload':['resetcmd']} )
+        # try:
+        #     broadcastStatus("radio", json.dumps(dict(task = "uploadingFirmware")))
+        #     load_radio()
+        # except IOError:
+        #     return render_mako('radio.html', error={'badupload':['resetcmd']} )
+        radio = json.loads(db.get('conf/radio'))            
+        return render_mako('radio.html', error = {}, radio = radio, forceReload="true")
 
     # GET
     radio = json.loads(db.get('conf/radio'))            
-    return render_mako('radio.html', error={}, radio = radio)
+    return render_mako('radio.html', error={}, radio = radio, forceReload="false")
 
 @app.route("/radio/radio", methods=['POST','GET'])
 @login_required

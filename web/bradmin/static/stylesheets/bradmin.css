@@ -3,14 +3,23 @@ input {
 }
 
 /* no hover on disabled buttons */
-input[disabled] {
+button[disabled],input[disabled] {
     background:#ccc;
     border-color: #ccc;
     text-shadow:none;
     color: #aaa;
 }
 
-input,input[disabled]:hover { 
+.progressBar {
+    display: block;
+    background: #8EE0E0;
+    margin-bottom: 10px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+}
+
+input,input[disabled]:hover,button[disabled]:hover { 
 		background: #eee; /* Old browsers */
 		background: #eee -moz-linear-gradient(top, rgba(255,255,255,.2) 0%, rgba(0,0,0,.2) 100%); /* FF3.6+ */
 		background: #eee -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,.2)), color-stop(100%,rgba(0,0,0,.2))); /* Chrome,Safari4+ */

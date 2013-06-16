@@ -29,6 +29,19 @@ App.init = function() {
 
     App.mainView.append();
 
+    App.statusSocket = io.connect('/status');
+    App.statusSocket.on('radio', function(data) {
+	d = JSON.parse(data);
+	console.log("radio " + data);
+	console.log(d);
+	if (d.hasOwnProperty("loadRadioProgress")) {
+	    App.mainView.set('progress', d.loadRadioProgress)
+	}
+	if (d.hasOwnProperty("task")) {
+	    App.mainView.set('task', d.task);
+	}
+    });
+
 };
 
 
@@ -52,13 +65,37 @@ Ember.Handlebars.registerHelper('trigger', function (evtName, options) {
     });
 });
 
-
+/* this has one big monolithic view to do everything */
+/* someday should rewrite this to be more ember-ish */
 App.mainViewClass = Ember.View.extend({
     templateName: 'main',
     doToolTips: function () {
 	$('#tunslip-tip').qtip({content: "The fallback address will be use if an ipv6 address cannot be established"});
-    }
+    },
+    /* keep track of what we are doing */
+    /* tasks are: idle, changingChannel, uploadingFirmware, reloadingFirmware */
+    task: "idle",
+    progress: "100%", /* current progress in the task */
+    progressStyle: function() {
+	return "width: " + this.get('progress') + "; visibility: " + this.get('progressVisible') + ";";
+    }.property('progress'),
+    progressVisible: function() {
+	if (this.get('doingSomething')) {
+	    return "visible";
+	} else {
+	    return "hidden";
+	}
+    }.property('doingSomething'),
+    doingSomething: function() {
+	if (this.get('task') != 'idle') { 
+	    return true; 
+	} else  {
+	    return false;
+	}
+    }.property('task'),
 });
+
+
 
 App.mainView = App.mainViewClass.create();
 
@@ -71,6 +108,7 @@ App.radio = Ember.Object.create ({
     changeChannel: function () {
 	console.log("change channel");
 	if (this.get('newChannel') != this.get('oldChannel')) {
+	    App.mainView.set('task', 'changingChannel');
 	    console.log("setting new channel")
 	    $.ajax({
 		url: "radio/channel",
@@ -82,6 +120,7 @@ App.radio = Ember.Object.create ({
 		}),
 		success: function(data) {
 		    this.set('oldChannel', this.get('newChannel'));
+		    App.mainView.set('task','idle');
 		}
 	    });
 	}	
@@ -104,6 +143,7 @@ App.radio = Ember.Object.create ({
 	});
     },
     reload: function() {
+	App.mainView.set('task', 'reloadingFirmware');
 	console.log('reload');
 	$.ajax({
 	    url: "radio/reload",
@@ -112,6 +152,7 @@ App.radio = Ember.Object.create ({
 	    contentType: "application/json",
 	    data: null,
 	    success: function(data) {
+		App.mainView.set('task', 'idle');
 	    }
 	});
     }
