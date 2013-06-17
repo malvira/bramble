@@ -146,32 +146,51 @@ ${nav.bar()}
   <br class="clear">
   
   <p>
-  <div class="four cjust columns offset-by-six">
-    {{#if App.distroView.checkWait}}
-    <p>
-    checking for updates...
-    <img src="static/images/ajax-loader.gif" class="spinner" 
-	 {{bindAttr class="App.distroView.checkWait:visible"}}>
-    {{else}}
-      {{#if App.distroView.haveUpdates}}
-        {{#view App.FadeInView contentBinding="this"}}
-          <div class="success" style="text-align: center; height: 5ex;">
-            <p style="line-height: 4.75ex">Update available
-          </div>
-	  <button {{action "applyUpdates" target="App.distroView"}} >Apply Updates</button>
-        {{/view}}
-      {{else}}
-        {{#view App.FadeInView contentBinding="this"}}
-          <div class="failure" style="text-align: center; height: 5ex;">
-            <p style="line-height: 4.75ex">No updates available
-          </div>
-	  <button {{action "checkForUpdates" target="App.distroView"}} >Check for Updates</button>
-        {{/view}}
-      {{/if}}
-    {{/if}}
 
+		{{#if updateBusy}}
+		<div class="four cjust columns offset-by-six">
+			{{updateMsg}}
+		</div>
+		{{/if}}
+		
+		<div class="four columns offset-by-six">
+			<span class="progressBar" {{bindAttr style="updateProgressStyle"}}>&nbsp</span>
+		</div>				
 
+		<div class="four cjust columns offset-by-six">
+
+			{{#if App.distroView.checkWait}}
+			<p>
+				checking for updates...
+				<img src="static/images/ajax-loader.gif" class="spinner" 
+						 {{bindAttr class="App.distroView.checkWait:visible"}}>
+			{{else}}
+
+				{{#if App.distroView.haveUpdates}}
+
+				{{#if updateBusy}}
+
+				{{else}}
+        {{#view App.FadeInView contentBinding="this"}}
+        <div class="success" style="text-align: center; height: 5ex;">
+          <p style="line-height: 4.75ex">Update available
+        </div>
+        {{/view}}
+				{{/if}}
+
+				<button {{bindAttr disabled="updateBusy"}} {{action "applyUpdates" target="App.distroView"}} >Apply Updates</button>
+
+				{{else}}
+        {{#view App.FadeInView contentBinding="this"}}
+        <div class="failure" style="text-align: center; height: 5ex;">
+          <p style="line-height: 4.75ex">No updates available
+        </div>
+				<button {{action "checkForUpdates" target="App.distroView"}} >Check for Updates</button>
+        {{/view}}
+				{{/if}}
+			{{/if}}
+				
   </div>
-  
+
 </script>
 </div>
