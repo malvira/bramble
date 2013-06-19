@@ -50,7 +50,7 @@ def broadcastStatus(event, msg):
 
 class HealthCheck(Greenlet):
     def __init__(self, interval=30):
-        super(HealthCheck, self).__init__();
+        super(HealthCheck, self).__init__()
         self.interval = interval
         self.start()
     def _run(self):

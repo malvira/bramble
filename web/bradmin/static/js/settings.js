@@ -32,6 +32,10 @@ App.init = function() {
 				console.log("updateMsg " + data);
 				App.distroView.set('updateMsg', data)
     });
+    App.statusSocket.on('reconnect', function () {
+	console.log("reconnected");
+	App.distroView.set('updateProgress', '100%');
+    });
 		
     setTimeout(function() { App.socket.emit('join', 'foobar'); }, 2000);
 		
@@ -125,6 +129,12 @@ App.distroView = Ember.View.create({
 						}
 				});	
     }
+});
+
+App.distroView.addObserver('updateProgress', function() {
+	if (App.distroView.get('updateProgress') == '100%') {
+		console.log('update finished');
+	}
 });
 
 App.changePassView = Ember.View.create({
