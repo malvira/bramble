@@ -12,6 +12,7 @@ from socketio.mixins import BroadcastMixin
 
 from bradmin import app, db
 import bradmin.lowpan
+import bradmin.radio
 
 import gevent
 from gevent import Greenlet
@@ -40,6 +41,12 @@ class StatusNamespace(BaseNamespace, BroadcastMixin):
     def initialize(self):
         # add ourself to the map of status sockets for the broadcast function to use
         statusNamespaces[self.socket.sessid] = self
+
+    # this is in status for no good reason. Should factor someday.
+    def on_radio(self, msg):
+        if msg == 'doFactoryRestore':
+            bradmin.radio.doFactoryRestore()
+
     def disconnect(self, silent=True):
         del statusNamespaces[self.socket.sessid]
         super(StatusNamespace, self).disconnect(silent)

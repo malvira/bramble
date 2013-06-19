@@ -62,6 +62,8 @@ ${nav.bar()}
 	    %endfor
 	  </div>
       %endif
+      <input type=submit value="Restory Factory Firmware"
+	     {{action "factoryRestore" target="App.radio"}} {{bindAttr disabled="doingSomething"}}>
 
     </div>
 

@@ -12,25 +12,25 @@ App.init = function() {
     
     App.distroView.checkForUpdates();
 		
-		App.socket = io.connect('/chat');
-		App.socket.on('you_joined', function(data) {
-				console.log("You joined " + data);
+    App.socket = io.connect('/chat');
+    App.socket.on('you_joined', function(data) {
+	console.log("You joined " + data);
     });
     App.socket.on('foo', function(data) {
-				console.log("foo: " + data);
+	console.log("foo: " + data);
     });
 		
     App.statusSocket = io.connect('/status');
     App.statusSocket.on('lowpanAPI', function(data) {
-				console.log("lowpan check " + data);
+	console.log("lowpan check " + data);
     });
     App.statusSocket.on('updateProgress', function(data) {
-				console.log("updateProgress " + data);
-				App.distroView.set('updateProgress', data)
+	console.log("updateProgress " + data);
+	App.distroView.set('updateProgress', data)
     });
     App.statusSocket.on('updateMsg', function(data) {
-				console.log("updateMsg " + data);
-				App.distroView.set('updateMsg', data)
+	console.log("updateMsg " + data);
+	App.distroView.set('updateMsg', data)
     });
     App.statusSocket.on('reconnect', function () {
 	console.log("reconnected");

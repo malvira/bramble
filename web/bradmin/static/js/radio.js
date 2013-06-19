@@ -155,6 +155,10 @@ App.radio = Ember.Object.create ({
 		App.mainView.set('task', 'idle');
 	    }
 	});
+    },
+    factoryRestore: function() {
+	App.statusSocket.emit("radio", "doFactoryRestore");
+	App.mainView.set('task', 'factoryRestore');
     }
 });
 

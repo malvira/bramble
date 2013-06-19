@@ -86,6 +86,10 @@ def get_radio_channel():
     # check if channel is a number
     return int(channel)
 
+def doFactoryRestore():
+    subprocess.call(['cp', os.path.join(app.config['CACHE_ROOT'], 'br.bin.factory'), os.path.join(app.config['CACHE_ROOT'], 'br.bin')])
+    load_radio()
+
 @app.route("/radio/reload", methods=['POST'])
 @login_required
 def reload():
