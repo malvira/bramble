@@ -49,6 +49,9 @@ def brSetup():
         db.store('conf/br', json.dumps(br))
         db.store('conf/br.factory', json.dumps(br))
 
+        lowpan.syncConfig()
+        lowpan.updateGogoc()
+
         # set the radio's serial (which also sets the eui)
         try:
             radio.setSerial(br['m12serial'])
@@ -62,7 +65,5 @@ def brSetup():
         db.store('conf/bradmin.factory', json.dumps(conf, sort_keys=True, indent=4))
         # set the hostname
         os.system('hostnamectl set-hostname br12-%s' % (lowpanConf['eui']))
-
-        os.system('sleep 3 && systemctl restart bramble')
 
         return "Now you need to restart BRamble"
