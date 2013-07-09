@@ -60,7 +60,7 @@ def init():
     if (lowpanConf['url'] != None) and (lowpanConf['password'] != None):
         try:
             syncConfig()
-        except (urllib2.HTTPError, LowpanAPIError):
+        except (urllib2.HTTPError, LowpanAPIError, urllib2.URLError):
             print "Couldn't connect to lowpan"
 
 def updateGogoc():
